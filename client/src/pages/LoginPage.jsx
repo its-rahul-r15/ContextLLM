@@ -47,7 +47,7 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-screen w-screen bg-[#07080a] text-zinc-300 font-sans select-none antialiased flex items-center justify-center overflow-hidden">
-      
+
       {/* 1. Behind-the-scenes mock Knowledge cards grid (low opacity and blurred) */}
       <div className="absolute inset-0 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-8 opacity-25 filter blur-[0.5px] pointer-events-none select-none overflow-hidden">
         {MOCK_BG_CARDS.map((card, i) => (
@@ -97,12 +97,12 @@ export default function LoginPage() {
           </p>
 
           {/* Social Sign-in row matching layout */}
-          <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="grid grid-cols-1 gap-3 mb-6">
             <a
               href={api.auth.googleUrl()}
-              className="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-full text-[11px] font-bold bg-[#181b21] border border-white/[0.04] hover:bg-zinc-800 hover:border-white/[0.08] text-white transition-all shadow-sm"
+              className="flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-full text-[18px] font-bold bg-[#181b21] border border-white/4 hover:bg-zinc-800 hover:border-white/[0.08] text-white transition-all shadow-sm"
             >
-              <svg width="13" height="13" viewBox="0 0 48 48" className="shrink-0">
+              <svg width="16" height="16" viewBox="0 0 48 48" className="shrink-0">
                 <path fill="#FFC107" d="M43.6 20.1H42V20H24v8h11.3C33.6 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3L37.5 9.4C34.2 6.4 29.3 4.5 24 4.5 12.7 4.5 3.5 13.7 3.5 25S12.7 45.5 24 45.5 44.5 36.3 44.5 25c0-1.7-.2-3.3-.9-4.9z" />
                 <path fill="#FF3D00" d="M6.3 15.1l6.6 4.8C14.6 16.1 19 13 24 13c3.1 0 5.8 1.1 7.9 3L37.5 9.4C34.2 6.4 29.3 4.5 24 4.5c-7.7 0-14.3 4.4-17.7 10.6z" />
                 <path fill="#4CAF50" d="M24 45.5c5.2 0 9.9-1.8 13.5-4.8l-6.2-5.2C29.4 37 26.8 38 24 38c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.7 41 16.4 45.5 24 45.5z" />
@@ -110,16 +110,8 @@ export default function LoginPage() {
               </svg>
               <span>Google</span>
             </a>
-            
-            <button
-              onClick={() => alert("Apple authentication is currently unavailable.")}
-              className="flex items-center justify-center gap-2 py-3.5 px-4 rounded-full text-[11px] font-bold bg-[#181b21] border border-white/[0.04] hover:bg-zinc-800 hover:border-white/[0.08] text-white transition-all shadow-sm"
-            >
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" className="shrink-0 text-white">
-                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 4.17c.66-.81 1.11-1.93.99-3.06-.96.04-2.13.64-2.82 1.45-.6.69-1.12 1.83-.98 2.94 1.07.08 2.15-.52 2.81-1.33z" />
-              </svg>
-              <span>Apple</span>
-            </button>
+
+
           </div>
 
           {/* OR separator */}
@@ -144,7 +136,7 @@ export default function LoginPage() {
                 />
               </div>
             )}
-            
+
             <div>
               <label className="block text-xs font-semibold text-zinc-400 mb-2">Email</label>
               <input
@@ -168,9 +160,9 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   className="w-full px-4 py-3 pr-10 rounded-xl text-xs outline-none bg-[#181b21] border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/40 transition-all"
                 />
-                <button 
-                  type="button" 
-                  onClick={() => setShowPw(!showPw)} 
+                <button
+                  type="button"
+                  onClick={() => setShowPw(!showPw)}
                   className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition"
                 >
                   {showPw ? <EyeOff size={14} /> : <Eye size={14} />}
@@ -201,8 +193,8 @@ export default function LoginPage() {
           {/* Toggle form mode footer link */}
           <p className="text-center text-xs text-zinc-400 mt-6 select-none">
             {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
-            <button 
-              onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }} 
+            <button
+              onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}
               className="font-bold text-[#ff4f1a] hover:text-[#ff6234] transition hover:underline ml-0.5"
             >
               {mode === 'login' ? 'Sign up' : 'Log in'}

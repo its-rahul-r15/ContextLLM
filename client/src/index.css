@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-serif: 'DM Serif Display', Georgia, serif;
+
+  --color-surface-0: #0d0e11;
+  --color-surface-1: #13151a;
+  --color-surface-2: #1a1d24;
+  --color-surface-3: #21252f;
+  --color-surface-4: #2a2f3d;
+
+  --color-border: rgba(255,255,255,0.07);
+  --color-border-hover: rgba(255,255,255,0.13);
+
+  --color-text-primary: #f0f1f3;
+  --color-text-secondary: #8b90a0;
+  --color-text-muted: #545a6e;
+
+  --color-accent: #7c6af7;
+  --color-accent-hover: #8f80f9;
+  --color-accent-soft: rgba(124,106,247,0.12);
+  --color-accent-border: rgba(124,106,247,0.3);
+
+  --color-green: #2dd4a0;
+  --color-green-soft: rgba(45,212,160,0.1);
+
+  --color-amber: #f5a623;
+  --color-amber-soft: rgba(245,166,35,0.1);
+
+  --color-red: #f05252;
+  --color-red-soft: rgba(240,82,82,0.1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  margin: 0;
+  background: var(--color-surface-0);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.6;
+  scroll-behavior: smooth;
+}
+
+/* Global scroll smoothing and hardware acceleration hints */
+* {
+  scroll-behavior: smooth;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+/* Premium transition defaults for buttons and cards */
+button, a, input, textarea, select {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-4);
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-muted);
+}
+
+::selection {
+  background: var(--color-accent-soft);
+  color: var(--color-text-primary);
+}

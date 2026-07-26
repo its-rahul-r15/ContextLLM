@@ -16,8 +16,12 @@ import chatRoutes from "./modules/chat/chat.routes.js";
 import noteRoutes from "./modules/notes/note.routes.js";
 
 import { env } from "./config/env.js";
+import { connectDB } from "./config/db.js";
 
 const app = express();
+
+// Proactively initiate database connection on startup to minimize cold-start latency
+connectDB().catch((err) => console.error("Initial MongoDB connection failed:", err));
 
 app.set("trust proxy", 1);
 
@@ -39,6 +43,16 @@ app.use(passport.initialize());
 app.use(defaultLimiter);
 
 app.use("/uploads", express.static("uploads"));
+
+// Middleware to ensure database connection is established before routing
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
 
 app.get("/health", (req, res) => res.json({ status: "ok", timestamp: new Date().toISOString() }));
 

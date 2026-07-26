@@ -22,4 +22,29 @@ const createRedisClient = () => {
   return client;
 };
 
-export const redisClient = createRedisClient();
+let clientInstance = null;
+
+const getRedisClient = () => {
+  if (!clientInstance) {
+    clientInstance = createRedisClient();
+  }
+  return clientInstance;
+};
+
+// Export redisClient as a Proxy to lazy-load the connection on first access (transparently resolves serverless pool exhaustion)
+export const redisClient = new Proxy({}, {
+  get(target, prop) {
+    if (prop === "then") return undefined; // Avoid promise resolution traps
+    const client = getRedisClient();
+    const value = client[prop];
+    if (typeof value === "function") {
+      return value.bind(client);
+    }
+    return value;
+  },
+  set(target, prop, value) {
+    const client = getRedisClient();
+    client[prop] = value;
+    return true;
+  }
+});

@@ -241,7 +241,7 @@ export default function NotebookPage() {
   };
 
   const handleAddSource = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     setUploading(true);
     try {
       let src;
@@ -285,18 +285,18 @@ export default function NotebookPage() {
 
   const handleDropFile = async (e) => {
     e.preventDefault();
-    const file = e.dataTransfer.files?.[0]; 
+    const file = e.dataTransfer.files?.[0];
     if (!file) return;
     setUploading(true);
-    const fd = new FormData(); 
+    const fd = new FormData();
     fd.append('file', file);
     try {
       const src = await api.sources.uploadFile(notebookId, fd);
       setSources(prev => [src, ...prev]);
       startPolling(src._id);
       setShowAddSource(false);
-    } finally { 
-      setUploading(false); 
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -359,8 +359,8 @@ export default function NotebookPage() {
           </h1>
         </div>
         <div className="flex items-center gap-4">
-          <Link 
-            to="/dashboard" 
+          <Link
+            to="/dashboard"
             className="flex items-center gap-1.5 px-3.5 py-1.5 border border-white/[0.08] hover:bg-white/[0.04] hover:border-white/[0.12] transition rounded-full text-xs font-semibold text-zinc-300"
           >
             <ArrowLeft size={13} /> Back to Notebooks
@@ -373,18 +373,17 @@ export default function NotebookPage() {
 
       {/* Main Workspace Layout */}
       <div className="flex flex-1 p-2 gap-2 overflow-hidden bg-[#07080a]">
-        
+
         {/* Left Panel: Sources */}
-        <aside 
+        <aside
           style={{ width: sidebarCollapsed ? '0px' : `${sidebarWidth}px`, minWidth: sidebarCollapsed ? '0px' : '200px' }}
-          className={`shrink-0 flex flex-col overflow-hidden bg-[#101216] border border-white/[0.04] rounded-2xl ${
-            isResizing ? '' : 'transition-all duration-300 ease-in-out'
-          } ${sidebarCollapsed ? 'opacity-0 border-none pointer-events-none' : 'opacity-100'}`}
+          className={`shrink-0 flex flex-col overflow-hidden bg-[#101216] border border-white/[0.04] rounded-2xl ${isResizing ? '' : 'transition-all duration-300 ease-in-out'
+            } ${sidebarCollapsed ? 'opacity-0 border-none pointer-events-none' : 'opacity-100'}`}
         >
           <div className="p-4 flex items-center justify-between border-b border-white/[0.04]">
             <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Sources</span>
             <div className="flex items-center gap-1">
-              <button 
+              <button
                 onClick={loadSourceGraph}
                 className="p-1.5 hover:bg-white/[0.04] rounded-lg transition text-zinc-400 hover:text-zinc-200"
                 title="Connected Knowledge Graph"
@@ -405,11 +404,11 @@ export default function NotebookPage() {
             {/* Custom search bar */}
             <div className="flex items-center gap-2 px-3.5 py-2.5 rounded-full bg-[#181b21] border border-white/[0.04]">
               <Search size={14} className="text-zinc-500 shrink-0" />
-              <input 
-                value={searchSources} 
-                onChange={e => setSearchSources(e.target.value)} 
-                className="bg-transparent text-xs outline-none flex-1 placeholder-zinc-500 text-zinc-200" 
-                placeholder="Search the web for new sources" 
+              <input
+                value={searchSources}
+                onChange={e => setSearchSources(e.target.value)}
+                className="bg-transparent text-xs outline-none flex-1 placeholder-zinc-500 text-zinc-200"
+                placeholder="Search the web for new sources"
               />
             </div>
           </div>
@@ -440,9 +439,9 @@ export default function NotebookPage() {
               const isSelected = selectedSources.has(src._id);
               const isPolling = pollingIds.has(src._id);
               return (
-                <div 
-                  key={src._id} 
-                  onClick={() => src.status === 'ready' && toggleSrc(src._id)} 
+                <div
+                  key={src._id}
+                  onClick={() => src.status === 'ready' && toggleSrc(src._id)}
                   className={`group flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer ${isSelected ? 'bg-zinc-800/40 border-white/[0.04]' : 'bg-transparent border-transparent hover:bg-zinc-900/60'}`}
                 >
                   <div className="flex items-center gap-3 min-w-0">
@@ -464,7 +463,7 @@ export default function NotebookPage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
                     {src.status === 'ready' && (
                       <div className={`w-4 h-4 rounded flex items-center justify-center transition ${isSelected ? 'bg-[#7c6af7]' : 'border border-zinc-700'}`}>
@@ -484,7 +483,7 @@ export default function NotebookPage() {
 
         {/* Resizer Handle */}
         {!sidebarCollapsed && (
-          <div 
+          <div
             onMouseDown={startResize}
             className="w-1 cursor-col-resize hover:w-1.5 hover:bg-[#7c6af7]/40 active:bg-[#7c6af7] transition-all rounded-full h-[98%] my-auto shrink-0 z-10"
           />
@@ -492,13 +491,13 @@ export default function NotebookPage() {
 
         {/* Center Panel: Chat Workspace */}
         <main className="flex-1 flex flex-col overflow-hidden bg-[#101216] border border-white/[0.04] rounded-2xl relative">
-          
+
           {/* Chat Panel Header */}
           <div className="px-6 py-4 flex items-center justify-between border-b border-white/[0.04]">
             <div className="flex items-center gap-2">
               {sidebarCollapsed && (
-                <button 
-                  onClick={() => setSidebarCollapsed(false)} 
+                <button
+                  onClick={() => setSidebarCollapsed(false)}
                   className="p-1.5 hover:bg-white/[0.04] rounded-lg transition text-zinc-400 hover:text-zinc-200 mr-2"
                   title="Expand sidebar"
                 >
@@ -508,19 +507,14 @@ export default function NotebookPage() {
               <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Chat</span>
             </div>
             <div className="flex items-center gap-3">
-              <button 
-                onClick={() => setShowNotes(!showNotes)} 
+              <button
+                onClick={() => setShowNotes(!showNotes)}
                 className={`p-1.5 rounded-lg transition ${showNotes ? 'bg-[#7c6af7]/20 text-[#7c6af7]' : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]'}`}
                 title="Notebook Notes"
               >
                 <StickyNote size={14} />
               </button>
-              <button className="p-1.5 hover:bg-white/[0.04] rounded-lg transition text-zinc-400 hover:text-zinc-200">
-                <Sliders size={14} />
-              </button>
-              <button className="p-1.5 hover:bg-white/[0.04] rounded-lg transition text-zinc-400 hover:text-zinc-200">
-                <MoreHorizontal size={14} />
-              </button>
+
             </div>
           </div>
 
@@ -554,14 +548,14 @@ export default function NotebookPage() {
                 <p className="text-sm text-zinc-400 mb-8 max-w-sm">Select sources from the left, then ask a question. Answers cite exactly where each fact came from.</p>
                 <div className="grid grid-cols-2 gap-3 w-full max-w-lg">
                   {[
-                    'Summarize the key points', 
-                    'What are the main themes?', 
-                    'List all key concepts', 
+                    'Summarize the key points',
+                    'What are the main themes?',
+                    'List all key concepts',
                     'Compare ideas across sources'
                   ].map(q => (
-                    <button 
-                      key={q} 
-                      onClick={() => setInput(q)} 
+                    <button
+                      key={q}
+                      onClick={() => setInput(q)}
                       className="text-left p-4 rounded-2xl text-xs font-semibold transition bg-[#181b21] border border-white/[0.04] hover:bg-[#20242c] hover:border-white/[0.08] text-zinc-300"
                     >
                       {q}
@@ -604,10 +598,10 @@ export default function NotebookPage() {
                   ref={textareaRef}
                   rows={1}
                   value={input}
-                  onChange={(e) => { 
-                    setInput(e.target.value); 
-                    e.target.style.height = 'auto'; 
-                    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px'; 
+                  onChange={(e) => {
+                    setInput(e.target.value);
+                    e.target.style.height = 'auto';
+                    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
                   }}
                   onKeyDown={handleKey}
                   placeholder="Start typing..."
@@ -615,14 +609,14 @@ export default function NotebookPage() {
                   className="flex-1 bg-transparent resize-none outline-none text-sm leading-relaxed text-white py-1 placeholder-zinc-500 border-0"
                   style={{ minHeight: '24px', maxHeight: '120px' }}
                 />
-                
+
                 <div className="flex items-center gap-2 shrink-0">
                   <span className="text-[10px] font-bold tracking-wide px-2.5 py-1 bg-zinc-800 text-zinc-400 rounded-full">
                     {selectedSources.size} {selectedSources.size === 1 ? 'source' : 'sources'}
                   </span>
-                  <button 
-                    onClick={send} 
-                    disabled={!input.trim() || streaming} 
+                  <button
+                    onClick={send}
+                    disabled={!input.trim() || streaming}
                     className={`w-9 h-9 rounded-full flex items-center justify-center transition disabled:opacity-40 shrink-0 ${input.trim() && !streaming ? 'bg-[#7c6af7] hover:scale-105 text-white' : 'bg-zinc-800 text-zinc-500'}`}
                   >
                     {streaming ? <Loader2 size={16} className="animate-spin" /> : <Send size={15} />}
@@ -683,7 +677,7 @@ export default function NotebookPage() {
                   <div className="p-4 rounded-2xl bg-zinc-900 border border-white/[0.02] text-sm text-zinc-200 leading-relaxed shadow-inner">
                     "{citationData.text}"
                   </div>
-                  
+
                   <div className="flex items-center gap-2 text-xs font-semibold text-[#7c6af7] px-1">
                     <div className="w-1.5 h-1.5 rounded-full bg-[#7c6af7] animate-ping" />
                     <span>Fact matched in workspace</span>
@@ -712,10 +706,10 @@ export default function NotebookPage() {
                               {matchedSource.title}
                             </p>
                             {(matchedSource.originUrl || matchedSource.meta?.url) && (
-                              <a 
-                                href={matchedSource.originUrl || matchedSource.meta.url} 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
+                              <a
+                                href={matchedSource.originUrl || matchedSource.meta.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 className="text-[10px] text-[#7c6af7] hover:underline font-semibold flex items-center gap-1 truncate mt-1"
                               >
                                 View original link
@@ -756,7 +750,7 @@ export default function NotebookPage() {
             <div className="flex items-center justify-between px-4 py-4 border-b border-white/[0.04]">
               <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Workspace Notes</span>
               <div className="flex items-center gap-2">
-                <button 
+                <button
                   onClick={createNewNote}
                   className="p-1 hover:bg-white/[0.04] rounded transition text-zinc-400 hover:text-zinc-200"
                   title="Create New Note"
@@ -779,8 +773,8 @@ export default function NotebookPage() {
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition shrink-0 flex items-center gap-1.5 ${activeNote?._id === n._id ? 'bg-[#7c6af7]/20 border border-[#7c6af7]/30 text-[#8e7ef9]' : 'bg-zinc-900 border border-white/[0.02] text-zinc-400 hover:text-white'}`}
                   >
                     <span>{n.title || 'Untitled'}</span>
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); deleteNote(n._id); }} 
+                    <button
+                      onClick={(e) => { e.stopPropagation(); deleteNote(n._id); }}
                       className="p-0.5 hover:bg-white/10 rounded transition text-zinc-500 hover:text-red-400"
                     >
                       <Trash2 size={10} />
@@ -824,7 +818,7 @@ export default function NotebookPage() {
                     <h4 className="text-xs font-bold text-zinc-400">No notes in workspace</h4>
                     <p className="text-[10px] text-zinc-600 mt-1">Keep track of key concepts and citations directly in this notebook.</p>
                   </div>
-                  <button 
+                  <button
                     onClick={createNewNote}
                     className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-[#7c6af7] hover:bg-[#8e7ef9] text-white transition flex items-center gap-1.5 shadow"
                   >
@@ -842,20 +836,20 @@ export default function NotebookPage() {
       {showAddSource && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
           <div className="w-full max-w-2xl bg-[#101216] border border-white/[0.06] rounded-3xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-            
+
             {/* Header */}
             <div className="relative px-6 pt-8 pb-4">
               <h3 className="text-xl font-medium text-white text-center">
                 Create notebook sources from
               </h3>
-              <button 
-                onClick={() => { setShowAddSource(false); setAddMode(''); setAddForm({ url: '', title: '', content: '' }); }} 
+              <button
+                onClick={() => { setShowAddSource(false); setAddMode(''); setAddForm({ url: '', title: '', content: '' }); }}
                 className="absolute right-6 top-6 p-1.5 text-zinc-400 hover:text-white transition rounded-full hover:bg-white/[0.04]"
               >
                 <X size={20} />
               </button>
             </div>
-            
+
             {!addMode ? (
               <div className="bg-[#101216]">
                 {/* Direct YouTube / Website link ingest input */}
@@ -867,8 +861,8 @@ export default function NotebookPage() {
                         <Globe size={11} />
                         <span>Link</span>
                       </div>
-                      
-                      <input 
+
+                      <input
                         type="url"
                         value={addForm.url}
                         onChange={e => setAddForm({ ...addForm, url: e.target.value })}
@@ -877,7 +871,7 @@ export default function NotebookPage() {
                         onKeyDown={e => e.key === 'Enter' && handleQuickAddUrl()}
                       />
 
-                      <button 
+                      <button
                         onClick={handleQuickAddUrl}
                         disabled={uploading}
                         className="w-7 h-7 rounded-full bg-[#7c6af7] hover:bg-[#8e7ef9] text-white flex items-center justify-center transition shrink-0 shadow disabled:opacity-40"
@@ -891,7 +885,7 @@ export default function NotebookPage() {
 
                 {/* Dropzone container */}
                 <div className="px-6 pb-6">
-                  <div 
+                  <div
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={handleDropFile}
                     className="border border-dashed border-white/[0.08] hover:border-[#7c6af7]/50 transition-all rounded-3xl p-10 text-center flex flex-col items-center justify-center bg-zinc-900/10 hover:bg-[#7c6af7]/2"
@@ -904,7 +898,7 @@ export default function NotebookPage() {
                     </span>
 
                     <div className="flex flex-wrap items-center justify-center gap-3">
-                      <button 
+                      <button
                         type="button"
                         onClick={() => fileInputRef.current?.click()}
                         className="flex items-center gap-2 px-4.5 py-2.5 rounded-full bg-zinc-800 text-xs font-semibold text-white border border-white/[0.06] hover:bg-zinc-700 transition shadow-sm"
@@ -913,7 +907,7 @@ export default function NotebookPage() {
                         <span>Upload files</span>
                       </button>
 
-                      <button 
+                      <button
                         type="button"
                         onClick={() => setAddMode('url')}
                         className="flex items-center gap-2 px-4.5 py-2.5 rounded-full bg-zinc-800 text-xs font-semibold text-white border border-white/[0.06] hover:bg-zinc-700 transition shadow-sm"
@@ -925,7 +919,7 @@ export default function NotebookPage() {
                         <span>Websites</span>
                       </button>
 
-                      <button 
+                      <button
                         type="button"
                         onClick={() => setAddMode('text')}
                         className="flex items-center gap-2 px-4.5 py-2.5 rounded-full bg-zinc-800 text-xs font-semibold text-white border border-white/[0.06] hover:bg-zinc-700 transition shadow-sm"
@@ -939,7 +933,7 @@ export default function NotebookPage() {
                   {/* Limits bar */}
                   <div className="mt-8 flex items-center justify-between gap-4">
                     <div className="flex-1 h-1 bg-zinc-900 rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className="h-full bg-[#7c6af7] rounded-full transition-all duration-500"
                         style={{ width: `${Math.min(100, (sources.length / 50) * 100)}%` }}
                       />
@@ -956,23 +950,23 @@ export default function NotebookPage() {
                   <>
                     <div>
                       <label className="block text-xs font-semibold text-zinc-400 mb-2">URL (YouTube or Website Link)</label>
-                      <input 
-                        autoFocus 
-                        required 
-                        type="url" 
-                        value={addForm.url} 
-                        onChange={e => setAddForm({ ...addForm, url: e.target.value })} 
-                        placeholder="https://..." 
-                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 transition" 
+                      <input
+                        autoFocus
+                        required
+                        type="url"
+                        value={addForm.url}
+                        onChange={e => setAddForm({ ...addForm, url: e.target.value })}
+                        placeholder="https://..."
+                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 transition"
                       />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-zinc-400 mb-2">Title (optional)</label>
-                      <input 
-                        value={addForm.title} 
-                        onChange={e => setAddForm({ ...addForm, title: e.target.value })} 
-                        placeholder="Auto-detected if empty" 
-                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 transition" 
+                      <input
+                        value={addForm.title}
+                        onChange={e => setAddForm({ ...addForm, title: e.target.value })}
+                        placeholder="Auto-detected if empty"
+                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 transition"
                       />
                     </div>
                   </>
@@ -981,39 +975,39 @@ export default function NotebookPage() {
                   <>
                     <div>
                       <label className="block text-xs font-semibold text-zinc-400 mb-2">Title</label>
-                      <input 
-                        required 
-                        autoFocus 
-                        value={addForm.title} 
-                        onChange={e => setAddForm({ ...addForm, title: e.target.value })} 
-                        placeholder="Source name" 
-                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 transition" 
+                      <input
+                        required
+                        autoFocus
+                        value={addForm.title}
+                        onChange={e => setAddForm({ ...addForm, title: e.target.value })}
+                        placeholder="Source name"
+                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 transition"
                       />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-zinc-400 mb-2">Content</label>
-                      <textarea 
-                        required 
-                        rows={6} 
-                        value={addForm.content} 
-                        onChange={e => setAddForm({ ...addForm, content: e.target.value })} 
-                        placeholder="Paste your text here..." 
-                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 resize-none transition" 
+                      <textarea
+                        required
+                        rows={6}
+                        value={addForm.content}
+                        onChange={e => setAddForm({ ...addForm, content: e.target.value })}
+                        placeholder="Paste your text here..."
+                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 resize-none transition"
                       />
                     </div>
                   </>
                 )}
                 <div className="flex gap-3 pt-2">
-                  <button 
-                    type="button" 
-                    onClick={() => setAddMode('')} 
+                  <button
+                    type="button"
+                    onClick={() => setAddMode('')}
                     className="flex-1 py-3 bg-zinc-900 hover:bg-zinc-800 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition border border-white/[0.02]"
                   >
                     Back
                   </button>
-                  <button 
-                    type="submit" 
-                    disabled={uploading} 
+                  <button
+                    type="submit"
+                    disabled={uploading}
                     className="flex-1 py-3 bg-[#7c6af7] hover:bg-[#8e7ef9] rounded-xl text-xs font-semibold text-white transition flex items-center justify-center gap-2"
                   >
                     {uploading ? <Loader2 size={15} className="animate-spin" /> : 'Add source'}
@@ -1034,8 +1028,8 @@ export default function NotebookPage() {
                 <Network size={18} className="text-[#7c6af7]" />
                 <span className="text-sm font-bold text-white tracking-wide">Connected Knowledge Graph</span>
               </div>
-              <button 
-                onClick={() => setShowGraph(false)} 
+              <button
+                onClick={() => setShowGraph(false)}
                 className="p-1.5 text-zinc-400 hover:text-white transition rounded-full hover:bg-white/[0.04]"
               >
                 <X size={20} />
@@ -1083,9 +1077,9 @@ function MessageBubble({ msg, onCitation, onCopy, copied }) {
                 if (p.startsWith('**') && p.endsWith('**')) return <strong key={pi} className="font-semibold text-white">{p.slice(2, -2)}</strong>;
                 const m = p.match(/^\[(\d+)\]$/);
                 if (m) return (
-                  <button 
-                    key={pi} 
-                    onClick={() => onCitation(parseInt(m[1]))} 
+                  <button
+                    key={pi}
+                    onClick={() => onCitation(parseInt(m[1]))}
                     className="inline-flex items-center justify-center w-4 h-4 rounded bg-[#3b82f6]/20 border border-[#3b82f6]/30 text-[#60a5fa] text-[10px] font-bold mx-0.5 align-middle hover:scale-110 transition"
                   >
                     {m[1]}
@@ -1105,9 +1099,9 @@ function MessageBubble({ msg, onCitation, onCopy, copied }) {
             if (p.startsWith('**') && p.endsWith('**')) return <strong key={pi} className="font-semibold text-white">{p.slice(2, -2)}</strong>;
             const m = p.match(/^\[(\d+)\]$/);
             if (m) return (
-              <button 
-                key={pi} 
-                onClick={() => onCitation(parseInt(m[1]))} 
+              <button
+                key={pi}
+                onClick={() => onCitation(parseInt(m[1]))}
                 className="inline-flex items-center justify-center w-4 h-4 rounded bg-[#3b82f6]/20 border border-[#3b82f6]/30 text-[#60a5fa] text-[10px] font-bold mx-0.5 align-middle hover:scale-110 transition"
               >
                 {m[1]}
@@ -1140,7 +1134,7 @@ function MessageBubble({ msg, onCitation, onCopy, copied }) {
           <div className="space-y-1.5">
             {renderContent(msg.text)}
           </div>
-          
+
           <div className="flex items-center gap-5 mt-4 opacity-0 group-hover:opacity-100 transition-all duration-200">
             <button className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition">
               <ThumbsUp size={13} />
@@ -1148,8 +1142,8 @@ function MessageBubble({ msg, onCitation, onCopy, copied }) {
             <button className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition">
               <ThumbsDown size={13} />
             </button>
-            <button 
-              onClick={() => onCopy(msg._id, msg.text)} 
+            <button
+              onClick={() => onCopy(msg._id, msg.text)}
               className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition"
             >
               {copied === msg._id ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
@@ -1175,7 +1169,7 @@ function GraphCanvas({ nodes, links }) {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    
+
     const resize = () => {
       const rect = canvas.parentElement.getBoundingClientRect();
       canvas.width = rect.width * window.devicePixelRatio;
@@ -1189,7 +1183,7 @@ function GraphCanvas({ nodes, links }) {
 
     const w = canvas.width / (2 * window.devicePixelRatio);
     const h = canvas.height / (2 * window.devicePixelRatio);
-    
+
     const simNodes = nodes.map((n, i) => ({
       ...n,
       x: w + (Math.random() - 0.5) * 160,
@@ -1275,7 +1269,7 @@ function GraphCanvas({ nodes, links }) {
       simNodes.forEach(node => {
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, 2 * Math.PI);
-        
+
         let fill = "#7c6af7";
         if (node.type === "youtube") fill = "#ef4444";
         if (node.type === "weblink") fill = "#10b981";
@@ -1318,7 +1312,7 @@ function GraphCanvas({ nodes, links }) {
         dragNode.y = pos.y;
         return;
       }
-      
+
       let found = null;
       for (const n of simNodes) {
         const dx = n.x - pos.x;

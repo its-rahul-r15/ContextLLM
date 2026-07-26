@@ -71,6 +71,7 @@ export default function NotebookPage() {
   const [sidebarWidth, setSidebarWidth] = useState(288);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   // Notes state
   const [showNotes, setShowNotes] = useState(false);
@@ -358,16 +359,34 @@ export default function NotebookPage() {
             {notebook.title}
           </h1>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 relative">
           <Link
             to="/dashboard"
             className="flex items-center gap-1.5 px-3.5 py-1.5 border border-white/[0.08] hover:bg-white/[0.04] hover:border-white/[0.12] transition rounded-full text-xs font-semibold text-zinc-300"
           >
             <ArrowLeft size={13} /> Back to Notebooks
           </Link>
-          <button onClick={() => logout().then(() => navigate('/login'))} className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#7c6af7] to-[#9b8df9] flex items-center justify-center text-xs font-bold text-white border border-white/10 hover:opacity-90 transition">
+          <button 
+            onClick={() => setShowProfile(!showProfile)} 
+            className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#7c6af7] to-[#9b8df9] flex items-center justify-center text-xs font-bold text-white border border-white/10 hover:opacity-90 transition shrink-0"
+          >
             {(user?.displayName || user?.email || 'U')[0].toUpperCase()}
           </button>
+
+          {showProfile && (
+            <div className="absolute right-0 top-11 rounded-2xl overflow-hidden z-[90] w-52 shadow-2xl bg-[#101216] border border-white/[0.06] animate-in fade-in slide-in-from-top-1 duration-150">
+              <div className="px-4 py-3.5 border-b border-white/[0.04] bg-[#0c0e12]">
+                <p className="text-xs font-semibold text-white">{user?.displayName || 'User profile'}</p>
+                <p className="text-[10px] text-zinc-500 truncate mt-0.5">{user?.email}</p>
+              </div>
+              <button 
+                onClick={() => { setShowProfile(false); logout().then(() => navigate('/login')); }} 
+                className="w-full text-left px-4 py-3 text-xs text-red-400 hover:bg-white/[0.02] transition font-medium"
+              >
+                Sign out
+              </button>
+            </div>
+          )}
         </div>
       </nav>
 

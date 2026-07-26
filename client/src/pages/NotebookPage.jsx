@@ -653,13 +653,14 @@ export default function NotebookPage() {
                   {/* YouTube Player Embed with timestamp seeking */}
                   {(() => {
                     const matchedSource = sources.find(s => s._id === citationData.sourceId);
-                    if (matchedSource && matchedSource.type === 'youtube' && matchedSource.meta?.url) {
+                    const sourceUrl = matchedSource?.originUrl || matchedSource?.meta?.url;
+                    if (matchedSource && matchedSource.type === 'youtube' && sourceUrl) {
                       const getYoutubeVideoId = (url) => {
                         const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
                         const match = url.match(regExp);
                         return (match && match[2].length === 11) ? match[2] : null;
                       };
-                      const vidId = getYoutubeVideoId(matchedSource.meta.url);
+                      const vidId = getYoutubeVideoId(sourceUrl);
                       if (vidId) {
                         return (
                           <div className="w-full aspect-video rounded-xl overflow-hidden border border-white/[0.06] bg-black shadow-lg">
@@ -710,9 +711,9 @@ export default function NotebookPage() {
                             <p className="text-xs font-semibold text-zinc-200 leading-snug group-hover:text-white transition">
                               {matchedSource.title}
                             </p>
-                            {matchedSource.meta?.url && (
+                            {(matchedSource.originUrl || matchedSource.meta?.url) && (
                               <a 
-                                href={matchedSource.meta.url} 
+                                href={matchedSource.originUrl || matchedSource.meta.url} 
                                 target="_blank" 
                                 rel="noopener noreferrer" 
                                 className="text-[10px] text-[#7c6af7] hover:underline font-semibold flex items-center gap-1 truncate mt-1"

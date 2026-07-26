@@ -8,9 +8,6 @@ import { incrementSourceCount } from "../notebooks/notebook.service.js";
 import { logger } from "../../utils/logger.js";
 import { env } from "../../config/env.js";
 import axios from "axios";
-import fs from "fs";
-import path from "path";
-
 // ─── URL Classification ───────────────────────────────────────────────────────
 
 /**
@@ -227,6 +224,93 @@ export const addSingleVideoSource = async (notebookId, ownerId, videoId, originU
   return { source, deduped: false };
 };
 
+// Helper for recursive JSON traversal
+const recursiveSearch = (obj, keyToFind, results = []) => {
+  if (!obj || typeof obj !== "object") return results;
+  
+  if (Array.isArray(obj)) {
+    for (const item of obj) {
+      recursiveSearch(item, keyToFind, results);
+    }
+  } else {
+    if (obj[keyToFind] !== undefined) {
+      results.push(obj[keyToFind]);
+    }
+    for (const key of Object.keys(obj)) {
+      recursiveSearch(obj[key], keyToFind, results);
+    }
+  }
+  return results;
+};
+
+// Pure JS scraper for YouTube playlist details without requiring an API key
+const fetchPlaylistScrape = async (listId) => {
+  const url = `https://www.youtube.com/playlist?list=${listId}`;
+  const { data: html } = await axios.get(url, {
+    headers: {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+      "Accept-Language": "en-US,en;q=0.9",
+    },
+    timeout: 15000,
+  });
+
+  const regex = /ytInitialData\s*=\s*({.+?});/;
+  const match = html.match(regex);
+  if (!match) {
+    throw new Error("Could not find ytInitialData in YouTube HTML");
+  }
+
+  const data = JSON.parse(match[1]);
+
+  // Extract Title
+  let title = "Untitled Playlist";
+  if (data.metadata?.playlistMetadataRenderer?.title) {
+    title = data.metadata.playlistMetadataRenderer.title;
+  } else if (data.header?.playlistHeaderRenderer?.title?.simpleText) {
+    title = data.header.playlistHeaderRenderer.title.simpleText;
+  } else if (data.header?.playlistHeaderRenderer?.title?.runs?.[0]?.text) {
+    title = data.header.playlistHeaderRenderer.title.runs[0].text;
+  } else {
+    const sidebarItems = recursiveSearch(data.sidebar, "playlistSidebarPrimaryInfoRenderer");
+    if (sidebarItems.length > 0 && sidebarItems[0].title?.runs?.[0]?.text) {
+      title = sidebarItems[0].title.runs[0].text;
+    }
+  }
+
+  // Extract Videos
+  const videos = [];
+  const oldRenderers = recursiveSearch(data, "playlistVideoRenderer");
+  if (oldRenderers.length > 0) {
+    oldRenderers.forEach((v, idx) => {
+      const videoId = v.videoId;
+      const vTitle = v.title?.runs?.[0]?.text || v.title?.simpleText || "Untitled Video";
+      const indexText = v.index?.runs?.[0]?.text || v.index?.simpleText || String(idx + 1);
+      const position = parseInt(indexText, 10) - 1 || idx;
+      if (videoId) {
+        videos.push({ videoId, title: vTitle, position });
+      }
+    });
+  } else {
+    const newViewModels = recursiveSearch(data, "lockupViewModel");
+    if (newViewModels.length > 0) {
+      newViewModels.forEach((v, idx) => {
+        const videoId = v.contentId;
+        const vTitle = v.metadata?.lockupMetadataViewModel?.title?.content || "Untitled Video";
+        const position = idx;
+        if (videoId && v.contentType === "LOCKUP_CONTENT_TYPE_VIDEO") {
+          videos.push({ videoId, title: vTitle, position });
+        }
+      });
+    }
+  }
+
+  if (videos.length === 0) {
+    throw new Error("No videos found in the playlist");
+  }
+
+  return { title, videos };
+};
+
 /**
  * Fan-out a playlist into N independent video jobs.
  * Creates a Playlist doc + N Source docs, pushes N jobs to the ingestion queue.
@@ -239,11 +323,31 @@ export const addYoutubePlaylistSource = async (notebookId, ownerId, listId) => {
     return { playlist: existingPlaylist, deduped: true };
   }
 
-  logger.info(`Fetching playlist metadata for listId=${listId}`);
-  const [playlistTitle, videos] = await Promise.all([
-    fetchPlaylistTitle(listId),
-    fetchPlaylistItems(listId),
-  ]);
+  let playlistTitle;
+  let videos;
+
+  if (env.YOUTUBE_DATA_API_KEY) {
+    try {
+      [playlistTitle, videos] = await Promise.all([
+        fetchPlaylistTitle(listId),
+        fetchPlaylistItems(listId),
+      ]);
+    } catch (err) {
+      logger.warn(`Failed to fetch playlist using Data API, falling back to scraping: ${err.message}`);
+    }
+  }
+
+  if (!videos) {
+    logger.info(`Fetching playlist metadata via scraping for listId=${listId}`);
+    try {
+      const scraped = await fetchPlaylistScrape(listId);
+      playlistTitle = scraped.title;
+      videos = scraped.videos;
+    } catch (err) {
+      logger.error(`Scraping playlist fetch failed for listId=${listId}`, { err: err.message });
+      throw new ApiError(500, `Failed to load YouTube playlist metadata: ${err.message}`);
+    }
+  }
 
   if (videos.length === 0) {
     throw new ApiError(422, "Playlist is empty or unavailable");

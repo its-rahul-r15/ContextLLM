@@ -324,7 +324,7 @@ export default function NotebookPage() {
 
   const filteredSources = sources.filter(s => {
     const matchType = filterType === 'all' || s.type === filterType;
-    const matchSearch = s.title.toLowerCase().includes(searchSources.toLowerCase());
+    const matchSearch = (s.title || '').toLowerCase().includes(searchSources.toLowerCase());
     return matchType && matchSearch;
   });
 

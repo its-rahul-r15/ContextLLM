@@ -58,7 +58,7 @@ export default function DashboardPage() {
     setActiveMenu(null);
   };
 
-  const filtered = notebooks.filter(n => n.title.toLowerCase().includes(search.toLowerCase()));
+  const filtered = notebooks.filter(n => (n.title || '').toLowerCase().includes(search.toLowerCase()));
 
   return (
     <div className="min-h-screen bg-[#07080a] text-zinc-300 font-sans select-none antialiased flex flex-col">

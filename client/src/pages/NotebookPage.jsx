@@ -6,7 +6,7 @@ import {
   Globe, AlignLeft, Star, Trash2, Archive, ThumbsUp, ThumbsDown, Copy, RefreshCw,
   ZoomIn, ZoomOut, Printer, Bookmark, ArrowLeft, MoreHorizontal, Upload,
   Sparkles, Sliders, AudioLines, HelpCircle, Network, StickyNote,
-  PenSquare, Grid, Eye, Sun, Moon
+  PenSquare, Grid, Eye
 } from 'lucide-react';
 import { api, streamChat } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -73,16 +73,6 @@ export default function NotebookPage() {
   const [isResizing, setIsResizing] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
-
-  useEffect(() => {
-    localStorage.setItem('theme', theme);
-    if (theme === 'light') {
-      document.documentElement.classList.add('light');
-    } else {
-      document.documentElement.classList.remove('light');
-    }
-  }, [theme]);
 
   // Notes state
   const [showNotes, setShowNotes] = useState(false);
@@ -362,12 +352,12 @@ export default function NotebookPage() {
 
   if (!notebook) return (
     <div className="h-screen flex items-center justify-center bg-[#07080a]">
-      <Loader2 size={24} className="animate-spin text-[#7c6af7]" />
+      <Loader2 size={24} className="animate-spin text-[#00a884]" />
     </div>
   );
 
   return (
-    <div id="notebook-root" className={`h-screen w-screen flex flex-col overflow-hidden bg-[#07080a] text-zinc-300 antialiased font-sans ${isResizing ? 'cursor-col-resize select-none' : ''}`}>
+    <div className={`h-screen w-screen flex flex-col overflow-hidden bg-[#07080a] text-zinc-300 antialiased font-sans ${isResizing ? 'cursor-col-resize select-none' : ''}`}>
       <style>{`
         @media (max-width: 768px) {
           .rc-responsive-sidebar {
@@ -379,7 +369,7 @@ export default function NotebookPage() {
             z-index: 50 !important;
             width: calc(100vw - 16px) !important;
             max-width: 400px !important;
-            box-shadow: 0 20px 40px rgba(37, 22, 78, 0.16) !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
           }
           .rc-responsive-right-sidebar {
             position: absolute !important;
@@ -390,197 +380,16 @@ export default function NotebookPage() {
             z-index: 50 !important;
             width: calc(100vw - 16px) !important;
             max-width: 400px !important;
-            box-shadow: 0 20px 40px rgba(37, 22, 78, 0.16) !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
           }
-        }
-
-        /* ============================================================
-           Light theme — warm off-white surface, single deepened violet
-           accent, soft layered shadows instead of flat borders.
-           Kept as one scoped block so dark mode (default) is untouched.
-        ============================================================ */
-        .light {
-          --lt-bg: #f7f6fb;
-          --lt-bg-soft: #f0eef8;
-          --lt-surface: #ffffff;
-          --lt-surface-sunken: #f4f3f9;
-          --lt-border: #e6e3f0;
-          --lt-border-strong: #d9d5ea;
-          --lt-text-strong: #17151f;
-          --lt-text: #3f3d4d;
-          --lt-text-soft: #78748c;
-          --lt-text-faint: #a6a2b8;
-          --lt-accent: #6a4fe0;
-          --lt-accent-strong: #5b3fd1;
-          --lt-accent-wash: #6a4fe012;
-          --lt-shadow-sm: 0 1px 2px rgba(30, 20, 60, 0.05);
-          --lt-shadow-md: 0 4px 14px rgba(37, 22, 78, 0.07), 0 1px 2px rgba(37, 22, 78, 0.04);
-          --lt-shadow-lg: 0 16px 36px -8px rgba(37, 22, 78, 0.16), 0 2px 8px rgba(37, 22, 78, 0.05);
-        }
-
-        .light #notebook-root {
-          background-color: var(--lt-bg) !important;
-          color: var(--lt-text) !important;
-          background-image: radial-gradient(circle at 12% 0%, #6a4fe00d 0%, transparent 45%);
-        }
-
-        .light #notebook-header {
-          background-color: rgba(255, 255, 255, 0.82) !important;
-          border-bottom: 1px solid var(--lt-border) !important;
-          box-shadow: var(--lt-shadow-sm) !important;
-        }
-
-        .light aside, .light main, .light .bg-\[\#101216\] {
-          background-color: var(--lt-surface) !important;
-          border-color: var(--lt-border) !important;
-          color: var(--lt-text) !important;
-          box-shadow: var(--lt-shadow-md) !important;
-        }
-
-        .light .bg-\[\#0c0e12\] {
-          background-color: var(--lt-surface-sunken) !important;
-        }
-
-        .light .bg-\[\#181b21\], .light .bg-zinc-900\/50, .light .bg-zinc-900, .light .bg-\[\#101216\] {
-          background-color: var(--lt-surface-sunken) !important;
-          border-color: var(--lt-border) !important;
-        }
-
-        .light .bg-zinc-900\/60, .light .bg-\[\#0d0f13\]\/60 {
-          background-color: var(--lt-surface) !important;
-        }
-
-        .light h1, .light h2, .light h3, .light h4, .light p, 
-        .light span, .light div, .light li, .light a,
-        .light textarea, .light input {
-          color: var(--lt-text) !important;
-        }
-
-        .light h1, .light h2, .light h3, .light h4, .light .text-white, .light .text-zinc-100 {
-          color: var(--lt-text-strong) !important;
-        }
-
-        .light .text-zinc-200, .light .text-zinc-300 {
-          color: var(--lt-text) !important;
-        }
-
-        .light .text-zinc-400 {
-          color: var(--lt-text-soft) !important;
-        }
-
-        .light .text-zinc-500, .light .text-zinc-600 {
-          color: var(--lt-text-faint) !important;
-        }
-
-        .light .border-white\/\[0\.04\], .light .border-white\/\[0\.05\], .light .border-white\/\[0\.06\], .light .border-white\/\[0\.08\], .light .border-white\/\[0\.02\] {
-          border-color: var(--lt-border) !important;
-        }
-
-        .light .border-b, .light .border-t, .light .border-r, .light .border-l {
-          border-color: var(--lt-border) !important;
-        }
-
-        .light .bg-gradient-to-t {
-          --tw-gradient-from: var(--lt-bg) !important;
-          --tw-gradient-to: rgba(247, 246, 251, 0) !important;
-        }
-
-        .light textarea, .light input {
-          color: var(--lt-text-strong) !important;
-          background-color: transparent !important;
-        }
-
-        .light textarea::placeholder, .light input::placeholder {
-          color: var(--lt-text-faint) !important;
-        }
-
-        .light .bg-zinc-800\/40 {
-          background-color: var(--lt-bg-soft) !important;
-          border-color: var(--lt-border) !important;
-          color: var(--lt-text-strong) !important;
-        }
-
-        .light .hover\:bg-zinc-900\/60:hover {
-          background-color: var(--lt-surface-sunken) !important;
-        }
-
-        .light .group:hover .group-hover\:text-white {
-          color: var(--lt-text-strong) !important;
-        }
-
-        .light .text-\[\#60a5fa\] {
-          color: var(--lt-accent-strong) !important;
-        }
-
-        .light .bg-\[\#3b82f6\]\/20 {
-          background-color: var(--lt-accent-wash) !important;
-          border-color: var(--lt-border-strong) !important;
-        }
-
-        .light .bg-zinc-600 {
-          background-color: var(--lt-accent) !important;
-        }
-
-        .light .bg-zinc-800 {
-          background-color: var(--lt-bg-soft) !important;
-          color: var(--lt-text-soft) !important;
-        }
-
-        .light .hover\:bg-white\/\[0\.04\]:hover, .light .hover\:bg-white\/\[0\.02\]:hover {
-          background-color: var(--lt-bg-soft) !important;
-        }
-
-        .light .text-\[\#8e7ef9\] {
-          color: var(--lt-accent) !important;
-        }
-
-        .light .bg-\[\#7c6af7\]\/10 {
-          background-color: var(--lt-accent-wash) !important;
-          border-color: transparent !important;
-        }
-
-        .light .bg-zinc-850, .light .bg-zinc-800\/80 {
-          background-color: var(--lt-surface-sunken) !important;
-          border-color: var(--lt-border) !important;
-          color: var(--lt-text) !important;
-        }
-
-        .light .bg-\[\#7c6af7\] {
-          background-color: var(--lt-accent) !important;
-        }
-
-        .light .text-\[\#7c6af7\] {
-          color: var(--lt-accent) !important;
-        }
-
-        .light .bg-black\/60 {
-          background-color: rgba(23, 21, 31, 0.45) !important;
-        }
-
-        .light .border-dashed {
-          border-color: var(--lt-border-strong) !important;
-        }
-
-        .light .border-dashed:hover {
-          border-color: var(--lt-accent) !important;
-          background-color: var(--lt-accent-wash) !important;
-        }
-
-        .light .scrollbar-none button {
-          border-color: var(--lt-border) !important;
-        }
-
-        .light .scrollbar-none button.bg-zinc-800 {
-          background-color: var(--lt-accent-wash) !important;
-          color: var(--lt-accent-strong) !important;
         }
       `}</style>
 
       {/* Top Header */}
-      <nav id="notebook-header" className="hidden md:flex items-center justify-between px-4 sm:px-6 h-14 shrink-0 z-50 bg-[#0c0e12] border-b border-white/[0.04]">
+      <nav className="hidden md:flex items-center justify-between px-4 sm:px-6 h-14 shrink-0 z-50 bg-[#0c0e12] border-b border-white/[0.04]">
         <div className="flex items-center gap-2 sm:gap-4 min-w-0">
           <Link to="/dashboard" className="flex items-center gap-2.5 shrink-0">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#7c6af7]">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#00a884]">
               <BookOpen size={16} className="text-white" />
             </div>
           </Link>
@@ -599,18 +408,9 @@ export default function NotebookPage() {
             <span className="inline xs:hidden">Back</span>
           </Link>
 
-          {/* Theme Toggle */}
-          <button 
-            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-            className="p-1.5 rounded-lg border border-white/[0.08] hover:bg-white/[0.04] text-zinc-400 hover:text-white transition shrink-0"
-            title="Toggle theme"
-          >
-            {theme === 'light' ? <Moon size={13} /> : <Sun size={13} />}
-          </button>
-
           <button 
             onClick={() => setShowProfile(!showProfile)} 
-            className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#7c6af7] to-[#9b8df9] flex items-center justify-center text-xs font-bold text-white border border-white/10 hover:opacity-90 transition shrink-0"
+            className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#00a884] to-[#009688] flex items-center justify-center text-xs font-bold text-white border border-white/10 hover:opacity-90 transition shrink-0"
           >
             {(user?.displayName || user?.email || 'U')[0].toUpperCase()}
           </button>
@@ -697,7 +497,7 @@ export default function NotebookPage() {
             </button>
             <button onClick={handleSelectAll} className="flex items-center gap-1.5 hover:text-zinc-300 transition font-medium">
               <span>Select all</span>
-              <div className={`w-3.5 h-3.5 rounded flex items-center justify-center transition border ${selectedSources.size === sources.filter(s => s.status === 'ready').length ? 'bg-[#7c6af7] border-[#7c6af7]' : 'border-zinc-700'}`}>
+              <div className={`w-3.5 h-3.5 rounded flex items-center justify-center transition border ${selectedSources.size === sources.filter(s => s.status === 'ready').length ? 'bg-[#00a884] border-[#00a884]' : 'border-zinc-700'}`}>
                 {selectedSources.size === sources.filter(s => s.status === 'ready').length && <Check size={10} className="text-white" strokeWidth={3} />}
               </div>
             </button>
@@ -736,10 +536,10 @@ export default function NotebookPage() {
                             Failed
                           </span>
                         ) : (
-                          <span className="flex items-center gap-1.5 text-[#7c6af7] font-semibold">
+                          <span className="flex items-center gap-1.5 text-[#00a884] font-semibold">
                             <span className="relative flex h-1.5 w-1.5 shrink-0">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7c6af7] opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#7c6af7]"></span>
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00a884] opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#00a884]"></span>
                             </span>
                             <span className="capitalize">
                               {src.status === 'pending' && 'Pending...'}
@@ -759,7 +559,7 @@ export default function NotebookPage() {
 
                   <div className="flex items-center gap-2">
                     {src.status === 'ready' && (
-                      <div className={`w-4 h-4 rounded flex items-center justify-center transition ${isSelected ? 'bg-[#7c6af7]' : 'border border-zinc-700'}`}>
+                      <div className={`w-4 h-4 rounded flex items-center justify-center transition ${isSelected ? 'bg-[#00a884]' : 'border border-zinc-700'}`}>
                         {isSelected && <Check size={11} className="text-white" strokeWidth={3} />}
                       </div>
                     )}
@@ -778,7 +578,7 @@ export default function NotebookPage() {
         {!sidebarCollapsed && (
           <div
             onMouseDown={startResize}
-            className="hidden md:block w-1 cursor-col-resize hover:w-1.5 hover:bg-[#7c6af7]/40 active:bg-[#7c6af7] transition-all rounded-full h-[98%] my-auto shrink-0 z-10"
+            className="hidden md:block w-1 cursor-col-resize hover:w-1.5 hover:bg-[#00a884]/40 active:bg-[#00a884] transition-all rounded-full h-[98%] my-auto shrink-0 z-10"
           />
         )}
 
@@ -806,18 +606,9 @@ export default function NotebookPage() {
               </span>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
-              {/* Theme Toggle on Mobile */}
-              <button 
-                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
-                className="md:hidden p-1.5 rounded-lg border border-white/[0.08] hover:bg-white/[0.04] text-zinc-400 hover:text-white transition shrink-0"
-                title="Toggle theme"
-              >
-                {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
-              </button>
-
               <button
                 onClick={() => { setShowAddSource(true); setAddMode(''); }}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#7c6af7]/10 hover:bg-[#7c6af7]/20 border border-[#7c6af7]/20 text-[#8e7ef9] rounded-full text-[10px] sm:text-xs font-bold transition shadow-sm shrink-0"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#00a884]/10 hover:bg-[#00a884]/20 border border-[#00a884]/20 text-[#00a884] rounded-full text-[10px] sm:text-xs font-bold transition shadow-sm shrink-0"
                 title="Add sources to this notebook"
               >
                 <Plus size={12} strokeWidth={2.5} />
@@ -830,7 +621,7 @@ export default function NotebookPage() {
                     setActiveCitation(null);
                   }
                 }}
-                className={`p-1.5 rounded-lg transition ${showNotes ? 'bg-[#7c6af7]/20 text-[#7c6af7]' : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]'}`}
+                className={`p-1.5 rounded-lg transition ${showNotes ? 'bg-[#00a884]/20 text-[#00a884]' : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]'}`}
                 title="Notebook Notes"
               >
                 <StickyNote size={14} />
@@ -861,8 +652,8 @@ export default function NotebookPage() {
 
             {messages.length === 0 && !streaming && (
               <div className="h-full flex flex-col items-center justify-center text-center px-4">
-                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 bg-[#7c6af7]/10 border border-[#7c6af7]/20">
-                  <Sparkles size={24} className="text-[#7c6af7]" />
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5 bg-[#00a884]/10 border border-[#00a884]/20">
+                  <Sparkles size={24} className="text-[#00a884]" />
                 </div>
                 <h2 className="text-lg font-bold text-white mb-2">Ask about your sources</h2>
                 <p className="text-sm text-zinc-400 mb-8 max-w-sm">Select sources from the left, then ask a question. Answers cite exactly where each fact came from.</p>
@@ -892,13 +683,13 @@ export default function NotebookPage() {
 
               {streaming && streamBuffer && (
                 <div className="flex gap-4">
-                  <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-[#7c6af7]/10 border border-[#7c6af7]/20 mt-0.5">
-                    <Sparkles size={14} className="text-[#7c6af7]" />
+                  <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 bg-[#00a884]/10 border border-[#00a884]/20 mt-0.5">
+                    <Sparkles size={14} className="text-[#00a884]" />
                   </div>
                   <div className="flex-1 pt-1">
                     <p className="text-sm text-zinc-200 leading-relaxed whitespace-pre-wrap">
                       {streamBuffer}
-                      <span className="inline-block w-1.5 h-4 ml-1 bg-[#7c6af7] animate-pulse" />
+                      <span className="inline-block w-1.5 h-4 ml-1 bg-[#00a884] animate-pulse" />
                     </p>
                   </div>
                 </div>
@@ -939,7 +730,7 @@ export default function NotebookPage() {
                   <button
                     onClick={send}
                     disabled={!input.trim() || streaming}
-                    className={`w-9 h-9 rounded-full flex items-center justify-center transition disabled:opacity-40 shrink-0 ${input.trim() && !streaming ? 'bg-[#7c6af7] hover:scale-105 text-white' : 'bg-zinc-800 text-zinc-500'}`}
+                    className={`w-9 h-9 rounded-full flex items-center justify-center transition disabled:opacity-40 shrink-0 ${input.trim() && !streaming ? 'bg-[#00a884] hover:scale-105 text-white' : 'bg-zinc-800 text-zinc-500'}`}
                   >
                     {streaming ? <Loader2 size={16} className="animate-spin" /> : <Send size={15} />}
                   </button>
@@ -1000,8 +791,8 @@ export default function NotebookPage() {
                     "{citationData.text}"
                   </div>
 
-                  <div className="flex items-center gap-2 text-xs font-semibold text-[#7c6af7] px-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#7c6af7] animate-ping" />
+                  <div className="flex items-center gap-2 text-xs font-semibold text-[#00a884] px-1">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#00a884] animate-ping" />
                     <span>Fact matched in workspace</span>
                   </div>
 
@@ -1032,7 +823,7 @@ export default function NotebookPage() {
                                 href={matchedSource.originUrl || matchedSource.meta.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-[10px] text-[#7c6af7] hover:underline font-semibold flex items-center gap-1 truncate mt-1"
+                                className="text-[10px] text-[#00a884] hover:underline font-semibold flex items-center gap-1 truncate mt-1"
                               >
                                 View original link
                               </a>
@@ -1092,7 +883,7 @@ export default function NotebookPage() {
                   <button
                     key={n._id}
                     onClick={() => setActiveNote(n)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition shrink-0 flex items-center gap-1.5 ${activeNote?._id === n._id ? 'bg-[#7c6af7]/20 border border-[#7c6af7]/30 text-[#8e7ef9]' : 'bg-zinc-900 border border-white/[0.02] text-zinc-400 hover:text-white'}`}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition shrink-0 flex items-center gap-1.5 ${activeNote?._id === n._id ? 'bg-[#00a884]/20 border border-[#00a884]/30 text-[#00a884]' : 'bg-zinc-900 border border-white/[0.02] text-zinc-400 hover:text-white'}`}
                   >
                     <span>{n.title || 'Untitled'}</span>
                     <button
@@ -1142,7 +933,7 @@ export default function NotebookPage() {
                   </div>
                   <button
                     onClick={createNewNote}
-                    className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-[#7c6af7] hover:bg-[#8e7ef9] text-white transition flex items-center gap-1.5 shadow"
+                    className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-[#00a884] hover:bg-[#00b087] text-white transition flex items-center gap-1.5 shadow"
                   >
                     <Plus size={13} /> Create Note
                   </button>
@@ -1178,7 +969,7 @@ export default function NotebookPage() {
                   <div
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={handleDropFile}
-                    className="border border-dashed border-white/[0.08] hover:border-[#7c6af7]/50 transition-all rounded-3xl p-10 text-center flex flex-col items-center justify-center bg-zinc-900/10 hover:bg-[#7c6af7]/2"
+                    className="border border-dashed border-white/[0.08] hover:border-[#00a884]/50 transition-all rounded-3xl p-10 text-center flex flex-col items-center justify-center bg-zinc-900/10 hover:bg-[#00a884]/2"
                   >
                     <span className="text-sm font-semibold text-white mb-1">
                       Drag & drop your files here
@@ -1224,7 +1015,7 @@ export default function NotebookPage() {
                   <div className="mt-8 flex items-center justify-between gap-4">
                     <div className="flex-1 h-1 bg-zinc-900 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-[#7c6af7] rounded-full transition-all duration-500"
+                        className="h-full bg-[#00a884] rounded-full transition-all duration-500"
                         style={{ width: `${Math.min(100, (sources.length / 50) * 100)}%` }}
                       />
                     </div>
@@ -1247,7 +1038,7 @@ export default function NotebookPage() {
                         value={addForm.url}
                         onChange={e => setAddForm({ ...addForm, url: e.target.value })}
                         placeholder="https://..."
-                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 transition"
+                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#00a884]/50 transition"
                       />
                     </div>
                     <div>
@@ -1256,7 +1047,7 @@ export default function NotebookPage() {
                         value={addForm.title}
                         onChange={e => setAddForm({ ...addForm, title: e.target.value })}
                         placeholder="Auto-detected if empty"
-                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 transition"
+                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#00a884]/50 transition"
                       />
                     </div>
                   </>
@@ -1271,7 +1062,7 @@ export default function NotebookPage() {
                         value={addForm.title}
                         onChange={e => setAddForm({ ...addForm, title: e.target.value })}
                         placeholder="Source name"
-                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 transition"
+                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#00a884]/50 transition"
                       />
                     </div>
                     <div>
@@ -1282,7 +1073,7 @@ export default function NotebookPage() {
                         value={addForm.content}
                         onChange={e => setAddForm({ ...addForm, content: e.target.value })}
                         placeholder="Paste your text here..."
-                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 resize-none transition"
+                        className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#00a884]/50 resize-none transition"
                       />
                     </div>
                   </>
@@ -1298,7 +1089,7 @@ export default function NotebookPage() {
                   <button
                     type="submit"
                     disabled={uploading}
-                    className="flex-1 py-3 bg-[#7c6af7] hover:bg-[#8e7ef9] rounded-xl text-xs font-semibold text-white transition flex items-center justify-center gap-2"
+                    className="flex-1 py-3 bg-[#00a884] hover:bg-[#00b087] rounded-xl text-xs font-semibold text-white transition flex items-center justify-center gap-2"
                   >
                     {uploading ? <Loader2 size={15} className="animate-spin" /> : 'Add source'}
                   </button>
@@ -1315,7 +1106,7 @@ export default function NotebookPage() {
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.04] shrink-0">
               <div className="flex items-center gap-2">
-                <Network size={18} className="text-[#7c6af7]" />
+                <Network size={18} className="text-[#00a884]" />
                 <span className="text-sm font-bold text-white tracking-wide">Connected Knowledge Graph</span>
               </div>
               <button
@@ -1330,7 +1121,7 @@ export default function NotebookPage() {
             <div className="flex-1 relative bg-[#0a0c10] overflow-hidden flex items-center justify-center">
               {graphLoading ? (
                 <div className="flex flex-col items-center gap-3">
-                  <Loader2 size={24} className="animate-spin text-[#7c6af7]" />
+                  <Loader2 size={24} className="animate-spin text-[#00a884]" />
                   <span className="text-xs text-zinc-500 font-semibold">Computing workspace connections...</span>
                 </div>
               ) : graphData.nodes.length === 0 ? (
@@ -1417,8 +1208,8 @@ function MessageBubble({ msg, onCitation, onCopy, copied }) {
   return (
     <div className="group animate-in fade-in duration-200">
       <div className="flex gap-4">
-        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5 bg-[#7c6af7]/10 border border-[#7c6af7]/20">
-          <Sparkles size={14} className="text-[#7c6af7]" />
+        <div className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 mt-0.5 bg-[#00a884]/10 border border-[#00a884]/20">
+          <Sparkles size={14} className="text-[#00a884]" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="space-y-1.5">
@@ -1442,7 +1233,7 @@ function MessageBubble({ msg, onCitation, onCopy, copied }) {
             <button className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition">
               <RefreshCw size={13} />
             </button>
-            <button className="flex items-center gap-1 text-xs text-[#7c6af7] font-semibold hover:opacity-80 transition ml-auto">
+            <button className="flex items-center gap-1 text-xs text-[#00a884] font-semibold hover:opacity-80 transition ml-auto">
               <Plus size={12} strokeWidth={2.5} />
               <span className="hidden xs:inline">Save to note</span>
               <span className="inline xs:hidden">Save</span>
@@ -1553,7 +1344,7 @@ function GraphCanvas({ nodes, links }) {
         ctx.beginPath();
         ctx.moveTo(link.sourceNode.x, link.sourceNode.y);
         ctx.lineTo(link.targetNode.x, link.targetNode.y);
-        ctx.strokeStyle = `rgba(124, 106, 247, ${0.1 + link.value * 0.25})`;
+        ctx.strokeStyle = `rgba(0, 168, 132, ${0.1 + link.value * 0.25})`;
         ctx.lineWidth = 1.5 + link.value * 1.5;
         ctx.stroke();
       });
@@ -1562,10 +1353,10 @@ function GraphCanvas({ nodes, links }) {
         ctx.beginPath();
         ctx.arc(node.x, node.y, node.radius, 0, 2 * Math.PI);
 
-        let fill = "#7c6af7";
-        if (node.type === "youtube") fill = "#ef4444";
+        let fill = "#00a884";
+        if (node.type === "youtube") fill = "#3b82f6";
         if (node.type === "weblink") fill = "#10b981";
-        if (node.type === "text") fill = "#a855f7";
+        if (node.type === "text") fill = "#059669";
 
         ctx.fillStyle = fill;
         ctx.shadowColor = fill;

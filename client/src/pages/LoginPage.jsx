@@ -79,7 +79,7 @@ export default function LoginPage() {
 
       {/* 3. Brand Logo (Top Left, z-index 30) */}
       <div className="absolute top-6 left-8 z-30 flex items-center gap-2.5">
-        <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#ff4f1a]">
+        <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[#00a884]">
           <BookOpen size={14} className="text-white" />
         </div>
         <span className="font-bold text-xs text-white tracking-wide">ContextLLM</span>
@@ -132,7 +132,7 @@ export default function LoginPage() {
                   value={form.displayName}
                   onChange={(e) => setForm({ ...form, displayName: e.target.value })}
                   placeholder="Your name"
-                  className="w-full px-4 py-3 rounded-xl text-xs outline-none bg-[#181b21] border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/40 transition-all"
+                  className="w-full px-4 py-3 rounded-xl text-xs outline-none bg-[#181b21] border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#00a884]/40 transition-all"
                 />
               </div>
             )}
@@ -145,7 +145,7 @@ export default function LoginPage() {
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
                 placeholder="Enter your email address..."
-                className="w-full px-4 py-3 rounded-xl text-xs outline-none bg-[#181b21] border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/40 transition-all"
+                className="w-full px-4 py-3 rounded-xl text-xs outline-none bg-[#181b21] border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#00a884]/40 transition-all"
               />
             </div>
 
@@ -158,7 +158,7 @@ export default function LoginPage() {
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 pr-10 rounded-xl text-xs outline-none bg-[#181b21] border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/40 transition-all"
+                  className="w-full px-4 py-3 pr-10 rounded-xl text-xs outline-none bg-[#181b21] border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#00a884]/40 transition-all"
                 />
                 <button
                   type="button"
@@ -180,7 +180,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3.5 px-4 rounded-full text-xs font-bold mt-4 bg-[#ff4f1a] hover:bg-[#ff6234] text-white shadow-lg shadow-[#ff4f1a]/10 hover:scale-[1.01] transition-all duration-150 flex items-center justify-center gap-2"
+              className="w-full py-3.5 px-4 rounded-full text-xs font-bold mt-4 bg-[#00a884] hover:bg-[#00b087] text-white shadow-lg shadow-[#00a884]/10 hover:scale-[1.01] transition-all duration-150 flex items-center justify-center gap-2"
             >
               {loading ? (
                 <Loader2 size={16} className="animate-spin text-white" />
@@ -195,7 +195,7 @@ export default function LoginPage() {
             {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
             <button
               onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}
-              className="font-bold text-[#ff4f1a] hover:text-[#ff6234] transition hover:underline ml-0.5"
+              className="font-bold text-[#00a884] hover:text-[#00b087] transition hover:underline ml-0.5"
             >
               {mode === 'login' ? 'Sign up' : 'Log in'}
             </button>

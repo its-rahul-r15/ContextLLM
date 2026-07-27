@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Plus, BookOpen, Search, Trash2, MoreHorizontal, Clock, Loader2, 
-  GraduationCap, Laptop, ChevronDown, List, X, Settings, Grid 
+  GraduationCap, X 
 } from 'lucide-react';
 import { api } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -15,7 +15,7 @@ const formatDate = (iso) => {
 const NOTEBOOK_ICONS = [
   <GraduationCap size={28} className="text-[#a855f7]" />,
   <BookOpen size={28} className="text-[#10b981]" />,
-  <Laptop size={28} className="text-[#3b82f6]" />
+  <GraduationCap size={28} className="text-[#3b82f6]" />
 ];
 
 const ICON_BACKGROUNDS = [
@@ -34,7 +34,6 @@ export default function DashboardPage() {
   const [newTitle, setNewTitle] = useState('');
   const [showProfile, setShowProfile] = useState(false);
   const [activeMenu, setActiveMenu] = useState(null);
-  const [viewMode, setViewMode] = useState('grid'); // 'grid' or 'list'
 
   useEffect(() => {
     api.notebooks.list()
@@ -64,63 +63,33 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-[#07080a] text-zinc-300 font-sans select-none antialiased flex flex-col">
       
       {/* Combined Single Header/Navbar matching mockup */}
-      <header className="sticky top-0 z-40 flex items-center justify-between px-8 h-16 bg-[#0c0e12] border-b border-white/[0.04]">
-        {/* Left Brand + My notebooks Active Tab */}
-        <div className="flex items-center gap-8">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#7c6af7]">
-              <BookOpen size={16} className="text-white" />
-            </div>
-            <span className="font-bold text-sm text-white tracking-wide">ContextLLM</span>
+      <header className="sticky top-0 z-40 flex items-center justify-between px-8 h-16 bg-[#0c0e12]/80 backdrop-blur-md border-b border-white/[0.04]">
+        {/* Left Brand */}
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#7c6af7] to-[#5b4af2] shadow-lg shadow-[#7c6af7]/10">
+            <BookOpen size={16} className="text-white" />
           </div>
-
-          <div className="flex items-center">
-            <button className="px-4 py-1.5 rounded-full text-xs font-semibold bg-[#181b21] text-white border border-white/[0.04] shadow-sm transition">
-              My notebooks
-            </button>
-          </div>
+          <span className="font-bold text-base text-white tracking-wide bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">ContextLLM</span>
         </div>
 
         {/* Right tools and actions */}
         <div className="flex items-center gap-4 relative">
           {/* Quick Search */}
-          <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#181b21] border border-white/[0.04]">
-            <Search size={13} className="text-zinc-500 shrink-0" />
+          <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-zinc-900/50 border border-white/[0.04] focus-within:border-[#7c6af7]/50 focus-within:bg-zinc-900 transition-all duration-200">
+            <Search size={14} className="text-zinc-500 shrink-0" />
             <input 
               type="text" 
               value={search}
               onChange={e => setSearch(e.target.value)}
               placeholder="Search notebooks..."
-              className="bg-transparent text-xs outline-none w-32 md:w-44 text-zinc-200 placeholder-zinc-500 border-none"
+              className="bg-transparent text-xs outline-none w-44 md:w-56 text-zinc-200 placeholder-zinc-500 border-none"
             />
           </div>
-
-          {/* Grid/List toggler */}
-          <div className="flex items-center bg-[#181b21] border border-white/[0.04] rounded-full p-1 shrink-0">
-            <button 
-              onClick={() => setViewMode('grid')}
-              className={`p-1 rounded-full transition ${viewMode === 'grid' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
-            >
-              <Grid size={13} />
-            </button>
-            <button 
-              onClick={() => setViewMode('list')}
-              className={`p-1 rounded-full transition ${viewMode === 'list' ? 'bg-zinc-800 text-white' : 'text-zinc-500 hover:text-zinc-300'}`}
-            >
-              <List size={13} />
-            </button>
-          </div>
-
-          {/* Sort selection */}
-          <button className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#181b21] border border-white/[0.04] hover:bg-zinc-800 rounded-full text-xs font-medium text-zinc-300 transition shrink-0">
-            <span>Most recent</span>
-            <ChevronDown size={11} className="text-zinc-500" />
-          </button>
 
           {/* Create notebook button */}
           <button 
             onClick={() => setCreating(true)}
-            className="flex items-center gap-1.5 px-4.5 py-2 bg-white text-[#07080a] hover:bg-zinc-200 rounded-full text-xs font-semibold shadow-lg hover:scale-105 transition duration-150 shrink-0"
+            className="flex items-center gap-1.5 px-5 py-2 bg-gradient-to-r from-[#7c6af7] to-[#6b58f9] hover:from-[#8e7ef9] hover:to-[#7c6af7] text-white rounded-full text-xs font-bold shadow-md shadow-[#7c6af7]/10 hover:scale-[1.02] active:scale-95 transition-all duration-150 shrink-0"
           >
             <Plus size={14} strokeWidth={2.5} />
             <span>Create new</span>
@@ -128,30 +97,25 @@ export default function DashboardPage() {
 
           <span className="h-4 w-px bg-white/[0.08]" />
 
-          {/* Actions & Settings placeholders matching mockup */}
-          <button className="p-2 border border-white/[0.08] hover:bg-white/[0.04] transition rounded-full text-zinc-300">
-            <Settings size={14} />
-          </button>
-          <span className="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 uppercase">PRO</span>
-          
+          {/* User Profile Trigger */}
           <button 
             onClick={() => setShowProfile(!showProfile)} 
-            className="flex items-center gap-2 p-1 rounded-full hover:bg-white/[0.03] transition-all shrink-0"
+            className="flex items-center gap-2 p-0.5 rounded-full hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06] transition-all shrink-0"
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#7c6af7] to-[#9b8df9] flex items-center justify-center text-xs font-bold text-white border border-white/10 hover:opacity-90 transition">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#7c6af7] to-[#9b8df9] flex items-center justify-center text-xs font-bold text-white border border-white/10 shadow-inner">
               {(user?.displayName || user?.email || 'U')[0].toUpperCase()}
             </div>
           </button>
 
           {showProfile && (
-            <div className="absolute right-0 top-12 rounded-2xl overflow-hidden z-50 w-52 shadow-2xl bg-[#101216] border border-white/[0.06] animate-in fade-in slide-in-from-top-1 duration-150">
-              <div className="px-4 py-3.5 border-b border-white/[0.04] bg-[#0c0e12]">
-                <p className="text-xs font-semibold text-white">{user?.displayName || 'User profile'}</p>
+            <div className="absolute right-0 top-12 rounded-2xl overflow-hidden z-50 w-56 shadow-2xl bg-[#12141a] border border-white/[0.06] animate-in fade-in slide-in-from-top-1 duration-150">
+              <div className="px-5 py-4 border-b border-white/[0.04] bg-[#0c0e12]">
+                <p className="text-xs font-bold text-white truncate">{user?.displayName || 'User profile'}</p>
                 <p className="text-[10px] text-zinc-500 truncate mt-0.5">{user?.email}</p>
               </div>
               <button 
                 onClick={() => { setShowProfile(false); logout().then(() => navigate('/login')); }} 
-                className="w-full text-left px-4 py-3 text-xs text-red-400 hover:bg-white/[0.02] transition font-medium"
+                className="w-full text-left px-5 py-3.5 text-xs text-red-400 hover:bg-red-500/[0.04] hover:text-red-300 transition font-semibold"
               >
                 Sign out
               </button>
@@ -162,14 +126,14 @@ export default function DashboardPage() {
 
       {/* Main Container */}
       <main className="flex-1 max-w-7xl mx-auto w-full px-8 py-12 overflow-y-auto">
-        <h2 className="text-2xl font-bold tracking-tight text-white mb-8 select-none">
+        <h2 className="text-xl font-bold tracking-tight text-white mb-8 select-none">
           My notebooks
         </h2>
 
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map(i => (
-              <div key={i} className="h-52 rounded-[24px] bg-[#101216] border border-white/[0.04] animate-pulse" />
+              <div key={i} className="h-52 rounded-3xl bg-[#101216] border border-white/[0.04] animate-pulse" />
             ))}
           </div>
         ) : filtered.length === 0 && search ? (
@@ -186,12 +150,12 @@ export default function DashboardPage() {
             {!search && (
               <div 
                 onClick={() => setCreating(true)}
-                className="group h-52 rounded-[24px] border-2 border-dashed border-white/[0.08] hover:border-[#7c6af7]/40 hover:bg-[#7c6af7]/2 transition-all duration-200 cursor-pointer flex flex-col items-center justify-center text-center gap-4 p-6 bg-zinc-900/5"
+                className="group h-52 rounded-3xl border border-dashed border-white/[0.08] hover:border-[#7c6af7]/40 bg-[#0c0e12]/20 hover:bg-[#7c6af7]/[0.02] transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center gap-3.5 p-6"
               >
-                <div className="w-12 h-12 rounded-full bg-zinc-900 border border-white/[0.04] flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:scale-105 transition duration-150 shadow-sm">
-                  <Plus size={22} strokeWidth={2.5} />
+                <div className="w-12 h-12 rounded-2xl bg-zinc-900/60 border border-white/[0.04] flex items-center justify-center text-zinc-400 group-hover:text-[#7c6af7] group-hover:border-[#7c6af7]/30 group-hover:scale-105 transition duration-300 shadow-inner">
+                  <Plus size={20} strokeWidth={2} />
                 </div>
-                <span className="text-sm font-bold text-zinc-400 group-hover:text-white transition">
+                <span className="text-xs font-bold tracking-wide text-zinc-500 group-hover:text-zinc-300 transition duration-300">
                   Create new notebook
                 </span>
               </div>
@@ -203,43 +167,45 @@ export default function DashboardPage() {
               return (
                 <div 
                   key={nb._id} 
-                  className="group relative h-52 rounded-[24px] p-6 bg-[#101216] border border-white/[0.04] hover:border-white/[0.08] transition-all duration-200 cursor-pointer flex flex-col justify-between shadow-md hover:shadow-xl hover:shadow-black/30"
+                  className="group relative h-52 rounded-3xl p-6 bg-[#0f1115] border border-white/[0.04] hover:border-white/[0.08] transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-lg shadow-black/10 hover:shadow-xl hover:shadow-black/35 hover:-translate-y-0.5"
                   onClick={() => navigate(`/notebook/${nb._id}`)}
                 >
                   <div className="flex items-start justify-between">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm ${ICON_BACKGROUNDS[iconIndex]}`}>
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm transition-all duration-300 group-hover:scale-105 ${ICON_BACKGROUNDS[iconIndex]}`}>
                       {NOTEBOOK_ICONS[iconIndex]}
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); setActiveMenu(activeMenu === nb._id ? null : nb._id); }}
-                      className="opacity-0 group-hover:opacity-100 p-2 rounded-xl hover:bg-white/[0.03] transition-all text-zinc-500 hover:text-zinc-300"
+                      className="opacity-0 group-hover:opacity-100 p-2 rounded-xl hover:bg-white/[0.04] transition-all text-zinc-500 hover:text-zinc-300"
                     >
-                      <MoreHorizontal size={16} />
+                      <MoreHorizontal size={15} />
                     </button>
                   </div>
 
-                  <div className="mt-4 flex-1">
-                    <h3 className="text-sm font-bold text-white leading-snug line-clamp-2 group-hover:text-[#9b8df9] transition">
+                  <div className="mt-4 flex-1 flex flex-col justify-center">
+                    <h3 className="text-sm font-bold text-zinc-100 leading-snug line-clamp-2 group-hover:text-white transition duration-200">
                       {nb.title}
                     </h3>
                   </div>
 
-                  <div className="flex items-center gap-2 mt-2 text-xs text-zinc-500 font-semibold tracking-wide">
-                    <span>{formatDate(nb.createdAt)}</span>
-                    <span>•</span>
-                    <span className="text-zinc-400">
+                  <div className="flex items-center justify-between border-t border-white/[0.02] pt-4 mt-2">
+                    <div className="flex items-center gap-1.5 text-[10px] text-zinc-500 font-semibold tracking-wide uppercase">
+                      <Clock size={10} className="text-zinc-600" />
+                      <span>{formatDate(nb.createdAt)}</span>
+                    </div>
+                    <span className="text-[10px] font-bold px-2.5 py-1 bg-zinc-900 border border-white/[0.02] rounded-full text-[#7c6af7] bg-[#7c6af7]/5">
                       {nb.sourceCount || 0} {nb.sourceCount === 1 ? 'source' : 'sources'}
                     </span>
                   </div>
 
                   {activeMenu === nb._id && (
                     <div 
-                      className="absolute top-14 right-4 rounded-xl overflow-hidden z-20 w-44 shadow-2xl bg-[#101216] border border-white/[0.06] animate-in fade-in duration-100"
+                      className="absolute top-14 right-4 rounded-xl overflow-hidden z-20 w-44 shadow-2xl bg-[#12141a] border border-white/[0.06] animate-in fade-in duration-100"
                       onClick={(e) => e.stopPropagation()}
                     >
                       <button 
                         onClick={() => deleteNotebook(nb._id)} 
-                        className="w-full text-left flex items-center gap-2 px-4.5 py-3.5 text-xs text-red-400 hover:bg-white/[0.02] font-semibold transition"
+                        className="w-full text-left flex items-center gap-2 px-4 py-3 text-xs text-red-400 hover:bg-red-500/[0.04] hover:text-red-300 font-bold transition"
                       >
                         <Trash2 size={13} /> Delete notebook
                       </button>
@@ -259,20 +225,20 @@ export default function DashboardPage() {
       {/* Notebook Creation Popup Dialog */}
       {creating && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
-          <div className="w-full max-w-md bg-[#101216] border border-white/[0.06] rounded-3xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-150">
+          <div className="w-full max-w-md bg-[#0f1115] border border-white/[0.06] rounded-3xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
             <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.04] bg-[#0c0e12]">
-              <h3 className="text-sm font-semibold text-white">Create notebook</h3>
+              <h3 className="text-sm font-bold text-white">Create new notebook</h3>
               <button 
                 onClick={() => { setCreating(false); setNewTitle(''); }} 
-                className="p-1 text-zinc-400 hover:text-white transition rounded-lg hover:bg-white/[0.04]"
+                className="p-1.5 text-zinc-400 hover:text-white transition rounded-full hover:bg-white/[0.04]"
               >
-                <X size={16} />
+                <X size={18} />
               </button>
             </div>
             
-            <form onSubmit={createNotebook} className="p-6 space-y-4 bg-[#101216]">
+            <form onSubmit={createNotebook} className="p-6 space-y-5 bg-[#0f1115]">
               <div>
-                <label className="block text-xs font-semibold text-zinc-400 mb-2">Notebook Name</label>
+                <label className="block text-xs font-bold text-zinc-400 mb-2 uppercase tracking-wide">Notebook Name</label>
                 <input 
                   autoFocus 
                   required 
@@ -280,7 +246,7 @@ export default function DashboardPage() {
                   value={newTitle} 
                   onChange={e => setNewTitle(e.target.value)} 
                   placeholder="e.g. Next.js Mastering Course" 
-                  className="w-full px-3.5 py-3 rounded-xl text-sm outline-none bg-zinc-900 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 transition" 
+                  className="w-full px-4 py-3 rounded-xl text-sm outline-none bg-zinc-900/60 border border-white/[0.04] text-white placeholder-zinc-600 focus:border-[#7c6af7]/50 focus:bg-zinc-950 transition duration-200" 
                 />
               </div>
               
@@ -288,13 +254,13 @@ export default function DashboardPage() {
                 <button 
                   type="button" 
                   onClick={() => { setCreating(false); setNewTitle(''); }} 
-                  className="flex-1 py-3 bg-zinc-900 hover:bg-zinc-800 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition border border-white/[0.02]"
+                  className="flex-1 py-3 bg-zinc-900/80 hover:bg-zinc-800 rounded-xl text-xs font-bold text-zinc-400 hover:text-white transition border border-white/[0.02]"
                 >
                   Cancel
                 </button>
                 <button 
                   type="submit" 
-                  className="flex-1 py-3 bg-[#7c6af7] hover:bg-[#8e7ef9] rounded-xl text-xs font-semibold text-white transition flex items-center justify-center"
+                  className="flex-1 py-3 bg-[#7c6af7] hover:bg-[#8e7ef9] rounded-xl text-xs font-bold text-white transition flex items-center justify-center shadow-lg shadow-[#7c6af7]/10"
                 >
                   Create
                 </button>

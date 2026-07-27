@@ -880,65 +880,33 @@ export default function NotebookPage() {
       {showAddSource && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/75 backdrop-blur-md">
           <div className="w-full max-w-2xl bg-[#101216] border border-white/[0.06] rounded-3xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-
             {/* Header */}
             <div className="relative px-6 pt-8 pb-4">
-              <h3 className="text-xl font-medium text-white text-center">
-                Create notebook sources from
+              <h3 className="text-lg font-bold text-white text-center">
+                Add sources to this notebook
               </h3>
               <button
                 onClick={() => { setShowAddSource(false); setAddMode(''); setAddForm({ url: '', title: '', content: '' }); }}
                 className="absolute right-6 top-6 p-1.5 text-zinc-400 hover:text-white transition rounded-full hover:bg-white/[0.04]"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
 
             {!addMode ? (
               <div className="bg-[#101216]">
-                {/* Direct YouTube / Website link ingest input */}
-                <div className="px-6 mb-6">
-                  <div className="p-4.5 rounded-2xl bg-[#181b21] border border-white/[0.05] relative flex flex-col gap-3">
-                    <span className="text-xs font-semibold text-zinc-400">YouTube or website link</span>
-                    <div className="flex items-center gap-3">
-                      <div className="flex items-center gap-1.5 px-3 py-1 bg-[#101216] text-[#7c6af7] text-[10px] font-bold rounded-full border border-white/[0.02] shrink-0">
-                        <Globe size={11} />
-                        <span>Link</span>
-                      </div>
-
-                      <input
-                        type="url"
-                        value={addForm.url}
-                        onChange={e => setAddForm({ ...addForm, url: e.target.value })}
-                        placeholder="Paste YouTube video or website URL here..."
-                        className="flex-1 bg-transparent text-xs text-white outline-none border-b border-transparent focus:border-zinc-800 pb-0.5 min-w-0"
-                        onKeyDown={e => e.key === 'Enter' && handleQuickAddUrl()}
-                      />
-
-                      <button
-                        onClick={handleQuickAddUrl}
-                        disabled={uploading}
-                        className="w-7 h-7 rounded-full bg-[#7c6af7] hover:bg-[#8e7ef9] text-white flex items-center justify-center transition shrink-0 shadow disabled:opacity-40"
-                        title="Add Link"
-                      >
-                        {uploading ? <Loader2 size={12} className="animate-spin" /> : <Plus size={12} strokeWidth={2.5} />}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
                 {/* Dropzone container */}
-                <div className="px-6 pb-6">
+                <div className="px-6 pb-8">
                   <div
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={handleDropFile}
                     className="border border-dashed border-white/[0.08] hover:border-[#7c6af7]/50 transition-all rounded-3xl p-10 text-center flex flex-col items-center justify-center bg-zinc-900/10 hover:bg-[#7c6af7]/2"
                   >
                     <span className="text-sm font-semibold text-white mb-1">
-                      or drop your files
+                      Drag & drop your files here
                     </span>
                     <span className="text-xs text-zinc-500 mb-8">
-                      pdf, txt, vtt
+                      Supports PDF, TXT, VTT
                     </span>
 
                     <div className="flex flex-wrap items-center justify-center gap-3">

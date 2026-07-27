@@ -8,6 +8,8 @@ import { incrementSourceCount } from "../notebooks/notebook.service.js";
 import { logger } from "../../utils/logger.js";
 import { env } from "../../config/env.js";
 import axios from "axios";
+import path from "path";
+import fs from "fs";
 // ─── URL Classification ───────────────────────────────────────────────────────
 
 /**

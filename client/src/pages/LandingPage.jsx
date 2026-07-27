@@ -210,8 +210,7 @@ export default function LandingPage() {
             text-align: center;
           }
           .rc-hero-img-container {
-            max-width: 320px !important;
-            margin: 40px auto 0 !important;
+            display: none !important;
           }
           .rc-hero-text-container {
             display: flex;

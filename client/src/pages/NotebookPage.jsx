@@ -69,7 +69,7 @@ export default function NotebookPage() {
   const [searchSources, setSearchSources] = useState('');
   const [copied, setCopied] = useState(null);
   const [sidebarWidth, setSidebarWidth] = useState(288);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
   const [isResizing, setIsResizing] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
 
@@ -361,23 +361,25 @@ export default function NotebookPage() {
         @media (max-width: 768px) {
           .rc-responsive-sidebar {
             position: absolute !important;
-            left: 8px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
             top: 64px !important;
             bottom: 8px !important;
             z-index: 50 !important;
-            width: 280px !important;
-            max-width: calc(100vw - 16px) !important;
-            box-shadow: 20px 0px 40px rgba(0, 0, 0, 0.6) !important;
+            width: calc(100vw - 16px) !important;
+            max-width: 400px !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
           }
           .rc-responsive-right-sidebar {
             position: absolute !important;
-            right: 8px !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
             top: 64px !important;
             bottom: 8px !important;
             z-index: 50 !important;
-            width: 320px !important;
-            max-width: calc(100vw - 16px) !important;
-            box-shadow: -20px 0px 40px rgba(0, 0, 0, 0.6) !important;
+            width: calc(100vw - 16px) !important;
+            max-width: 400px !important;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
           }
         }
       `}</style>
@@ -593,7 +595,15 @@ export default function NotebookPage() {
               </button>
               <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Chat</span>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <button
+                onClick={() => { setShowAddSource(true); setAddMode(''); }}
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-[#7c6af7]/10 hover:bg-[#7c6af7]/20 border border-[#7c6af7]/20 text-[#8e7ef9] rounded-full text-[10px] sm:text-xs font-bold transition shadow-sm shrink-0"
+                title="Add sources to this notebook"
+              >
+                <Plus size={12} strokeWidth={2.5} />
+                <span>Add source</span>
+              </button>
               <button
                 onClick={() => {
                   setShowNotes(!showNotes);
@@ -606,7 +616,6 @@ export default function NotebookPage() {
               >
                 <StickyNote size={14} />
               </button>
-
             </div>
           </div>
 
@@ -1174,8 +1183,8 @@ function MessageBubble({ msg, onCitation, onCopy, copied }) {
 
   if (isUser) {
     return (
-      <div className="flex justify-end">
-        <div className="max-w-md px-4 py-3 rounded-2xl rounded-tr-sm text-sm bg-zinc-800 border border-white/[0.04] text-white leading-relaxed">
+      <div className="flex justify-end animate-in fade-in duration-200">
+        <div className="max-w-[85%] sm:max-w-md px-4 py-3 rounded-2xl text-sm bg-zinc-800/40 border border-white/[0.04] text-zinc-100 leading-relaxed shadow-sm">
           {msg.text}
         </div>
       </div>
@@ -1193,7 +1202,7 @@ function MessageBubble({ msg, onCitation, onCopy, copied }) {
             {renderContent(msg.text)}
           </div>
 
-          <div className="flex items-center gap-5 mt-4 opacity-0 group-hover:opacity-100 transition-all duration-200">
+          <div className="flex items-center gap-3 sm:gap-5 mt-4 opacity-100 sm:opacity-0 group-hover:opacity-100 transition-all duration-200 flex-wrap">
             <button className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition">
               <ThumbsUp size={13} />
             </button>
@@ -1205,13 +1214,15 @@ function MessageBubble({ msg, onCitation, onCopy, copied }) {
               className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition"
             >
               {copied === msg._id ? <Check size={13} className="text-emerald-500" /> : <Copy size={13} />}
-              {copied === msg._id ? 'Copied' : 'Copy'}
+              <span>{copied === msg._id ? 'Copied' : 'Copy'}</span>
             </button>
             <button className="flex items-center gap-1.5 text-xs text-zinc-500 hover:text-zinc-300 transition">
               <RefreshCw size={13} />
             </button>
-            <button className="flex items-center gap-1.5 text-xs text-[#7c6af7] font-semibold hover:opacity-80 transition ml-auto">
-              <Plus size={12} strokeWidth={2.5} /> Save to note
+            <button className="flex items-center gap-1 text-xs text-[#7c6af7] font-semibold hover:opacity-80 transition ml-auto">
+              <Plus size={12} strokeWidth={2.5} />
+              <span className="hidden xs:inline">Save to note</span>
+              <span className="inline xs:hidden">Save</span>
             </button>
           </div>
         </div>

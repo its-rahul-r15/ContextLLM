@@ -155,6 +155,20 @@ export default function NotebookPage() {
     document.addEventListener('mouseup', stopDrag);
   }, [sidebarWidth]);
 
+  const startPolling = useCallback((sourceId) => {
+    setPollingIds(prev => new Set(prev).add(sourceId));
+    const iv = setInterval(async () => {
+      const srcs = await api.sources.list(notebookId);
+      setSources(srcs);
+      const src = srcs.find(s => s._id === sourceId);
+      if (src?.status === 'ready' || src?.status === 'failed') {
+        if (src.status === 'ready') setSelectedSources(prev => new Set(prev).add(sourceId));
+        setPollingIds(prev => { const n = new Set(prev); n.delete(sourceId); return n; });
+        clearInterval(iv);
+      }
+    }, 3000);
+  }, [notebookId]);
+
   useEffect(() => {
     Promise.all([
       api.notebooks.get(notebookId),
@@ -186,20 +200,6 @@ export default function NotebookPage() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, streamBuffer]);
-
-  const startPolling = useCallback((sourceId) => {
-    setPollingIds(prev => new Set(prev).add(sourceId));
-    const iv = setInterval(async () => {
-      const srcs = await api.sources.list(notebookId);
-      setSources(srcs);
-      const src = srcs.find(s => s._id === sourceId);
-      if (src?.status === 'ready' || src?.status === 'failed') {
-        if (src.status === 'ready') setSelectedSources(prev => new Set(prev).add(sourceId));
-        setPollingIds(prev => { const n = new Set(prev); n.delete(sourceId); return n; });
-        clearInterval(iv);
-      }
-    }, 3000);
-  }, [notebookId]);
 
   const ensureConv = async () => {
     if (activeConvId) return activeConvId;

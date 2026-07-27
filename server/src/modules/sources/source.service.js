@@ -10,6 +10,8 @@ import { env } from "../../config/env.js";
 import axios from "axios";
 import path from "path";
 import fs from "fs";
+import { parsePdf } from "./parsers/pdf.parser.js";
+import { parseVtt } from "./parsers/vtt.parser.js";
 // ─── URL Classification ───────────────────────────────────────────────────────
 
 /**
@@ -116,31 +118,18 @@ const fetchPlaylistTitle = async (listId) => {
 export const uploadFileSource = async (notebookId, ownerId, file, type) => {
   if (!file) throw new ApiError(400, "No file provided");
 
-  let cloudinaryPublicId = null;
-  let cloudinaryUrl = null;
-
+  let parsed;
   try {
-    const uploadResult = await uploadToCloudinary(file.buffer, {
-      folder: `contextllm/${notebookId}`,
-      resource_type: "raw",
-      public_id: `${Date.now()}_${file.originalname.replace(/\s/g, "_")}`,
-    });
-    cloudinaryPublicId = uploadResult.public_id;
-    cloudinaryUrl = uploadResult.secure_url;
-  } catch (error) {
-    logger.warn("Cloudinary upload failed, falling back to local storage", { error: error.message });
-
-    const uploadDir = path.join(process.cwd(), "uploads");
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
+    if (type === SOURCE_TYPES.PDF) {
+      parsed = await parsePdf(file.buffer);
+    } else if (type === SOURCE_TYPES.VTT) {
+      parsed = await parseVtt(file.buffer);
+    } else {
+      parsed = { segments: [{ paragraphIndex: 0, text: file.buffer.toString("utf-8") }], meta: {} };
     }
-
-    const filename = `${Date.now()}_${file.originalname.replace(/\s/g, "_")}`;
-    const filePath = path.join(uploadDir, filename);
-    fs.writeFileSync(filePath, file.buffer);
-
-    cloudinaryPublicId = `local_${filename}`;
-    cloudinaryUrl = `http://localhost:${env.PORT || 5000}/uploads/${filename}`;
+  } catch (error) {
+    logger.error("Failed to parse uploaded file in memory", { error: error.message });
+    throw new ApiError(400, `Failed to parse file: ${error.message}`);
   }
 
   const source = await Source.create({
@@ -149,13 +138,16 @@ export const uploadFileSource = async (notebookId, ownerId, file, type) => {
     type,
     title: file.originalname,
     status: SOURCE_STATUSES.PENDING,
-    cloudinaryPublicId,
-    cloudinaryUrl,
-    meta: { size: file.size, mimeType: file.mimetype },
+    meta: { size: file.size, mimeType: file.mimetype, ...parsed.meta },
   });
 
   await incrementSourceCount(notebookId, 1);
-  await addIngestionJob({ sourceId: source._id.toString(), type, notebookId });
+  await addIngestionJob({
+    sourceId: source._id.toString(),
+    type,
+    notebookId,
+    segments: parsed.segments
+  });
 
   return source;
 };

@@ -60,7 +60,9 @@ export const ingestionWorker = new Worker(
 
       let parsed;
 
-      if (type === SOURCE_TYPES.YOUTUBE) {
+      if (data.segments) {
+        parsed = { segments: data.segments, meta: {} };
+      } else if (type === SOURCE_TYPES.YOUTUBE) {
         // YouTube parser takes videoId — never a raw URL
         const videoId = data.videoId || source.videoId;
         if (!videoId) throw new Error(`No videoId for YouTube source ${sourceId}`);

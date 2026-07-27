@@ -329,6 +329,9 @@ export default function NotebookPage() {
     const lastAssistant = [...messages].reverse().find(m => m.role === 'assistant');
     const cite = lastAssistant?.citations?.find(c => c.ref === ref);
     setCitationData(cite || null);
+    if (cite) {
+      setShowNotes(false);
+    }
   };
 
   const filteredSources = sources.filter(s => {
@@ -354,25 +357,52 @@ export default function NotebookPage() {
 
   return (
     <div className={`h-screen w-screen flex flex-col overflow-hidden bg-[#07080a] text-zinc-300 antialiased font-sans ${isResizing ? 'cursor-col-resize select-none' : ''}`}>
+      <style>{`
+        @media (max-width: 768px) {
+          .rc-responsive-sidebar {
+            position: absolute !important;
+            left: 8px !important;
+            top: 64px !important;
+            bottom: 8px !important;
+            z-index: 50 !important;
+            width: 280px !important;
+            max-width: calc(100vw - 16px) !important;
+            box-shadow: 20px 0px 40px rgba(0, 0, 0, 0.6) !important;
+          }
+          .rc-responsive-right-sidebar {
+            position: absolute !important;
+            right: 8px !important;
+            top: 64px !important;
+            bottom: 8px !important;
+            z-index: 50 !important;
+            width: 320px !important;
+            max-width: calc(100vw - 16px) !important;
+            box-shadow: -20px 0px 40px rgba(0, 0, 0, 0.6) !important;
+          }
+        }
+      `}</style>
+
       {/* Top Header */}
-      <nav className="flex items-center justify-between px-6 h-14 shrink-0 z-50 bg-[#0c0e12] border-b border-white/[0.04]">
-        <div className="flex items-center gap-4 min-w-0">
+      <nav className="flex items-center justify-between px-4 sm:px-6 h-14 shrink-0 z-50 bg-[#0c0e12] border-b border-white/[0.04]">
+        <div className="flex items-center gap-2 sm:gap-4 min-w-0">
           <Link to="/dashboard" className="flex items-center gap-2.5 shrink-0">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#7c6af7]">
               <BookOpen size={16} className="text-white" />
             </div>
           </Link>
           <span className="h-4 w-px bg-white/[0.08]" />
-          <h1 className="text-sm font-semibold text-white truncate max-w-lg">
+          <h1 className="text-xs sm:text-sm font-semibold text-white truncate max-w-[120px] xs:max-w-[200px] sm:max-w-lg">
             {notebook.title}
           </h1>
         </div>
-        <div className="flex items-center gap-4 relative">
+        <div className="flex items-center gap-2 sm:gap-4 relative">
           <Link
             to="/dashboard"
-            className="flex items-center gap-1.5 px-3.5 py-1.5 border border-white/[0.08] hover:bg-white/[0.04] hover:border-white/[0.12] transition rounded-full text-xs font-semibold text-zinc-300"
+            className="flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 border border-white/[0.08] hover:bg-white/[0.04] hover:border-white/[0.12] transition rounded-full text-xs font-semibold text-zinc-300"
           >
-            <ArrowLeft size={13} /> Back to Notebooks
+            <ArrowLeft size={13} />
+            <span className="hidden xs:inline">Back to Notebooks</span>
+            <span className="inline xs:hidden">Back</span>
           </Link>
           <button 
             onClick={() => setShowProfile(!showProfile)} 
@@ -399,12 +429,27 @@ export default function NotebookPage() {
       </nav>
 
       {/* Main Workspace Layout */}
-      <div className="flex flex-1 p-2 gap-2 overflow-hidden bg-[#07080a]">
+      <div className="flex flex-1 p-2 gap-2 overflow-hidden bg-[#07080a] relative">
+        {/* Backdrop for Left Sidebar on Mobile */}
+        {!sidebarCollapsed && (
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden" 
+            onClick={() => setSidebarCollapsed(true)} 
+          />
+        )}
+
+        {/* Backdrop for Right Sidebars on Mobile */}
+        {(activeCitation !== null || showNotes) && (
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden" 
+            onClick={() => { setActiveCitation(null); setShowNotes(false); }} 
+          />
+        )}
 
         {/* Left Panel: Sources */}
         <aside
           style={{ width: sidebarCollapsed ? '0px' : `${sidebarWidth}px`, minWidth: sidebarCollapsed ? '0px' : '200px' }}
-          className={`shrink-0 flex flex-col overflow-hidden bg-[#101216] border border-white/[0.04] rounded-2xl ${isResizing ? '' : 'transition-all duration-300 ease-in-out'
+          className={`rc-responsive-sidebar shrink-0 flex flex-col overflow-hidden bg-[#101216] border border-white/[0.04] rounded-2xl ${isResizing ? '' : 'transition-all duration-300 ease-in-out'
             } ${sidebarCollapsed ? 'opacity-0 border-none pointer-events-none' : 'opacity-100'}`}
         >
           <div className="p-4 flex items-center justify-between border-b border-white/[0.04]">
@@ -529,7 +574,7 @@ export default function NotebookPage() {
         {!sidebarCollapsed && (
           <div
             onMouseDown={startResize}
-            className="w-1 cursor-col-resize hover:w-1.5 hover:bg-[#7c6af7]/40 active:bg-[#7c6af7] transition-all rounded-full h-[98%] my-auto shrink-0 z-10"
+            className="hidden md:block w-1 cursor-col-resize hover:w-1.5 hover:bg-[#7c6af7]/40 active:bg-[#7c6af7] transition-all rounded-full h-[98%] my-auto shrink-0 z-10"
           />
         )}
 
@@ -537,22 +582,25 @@ export default function NotebookPage() {
         <main className="flex-1 flex flex-col overflow-hidden bg-[#101216] border border-white/[0.04] rounded-2xl relative">
 
           {/* Chat Panel Header */}
-          <div className="px-6 py-4 flex items-center justify-between border-b border-white/[0.04]">
+          <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-white/[0.04]">
             <div className="flex items-center gap-2">
-              {sidebarCollapsed && (
-                <button
-                  onClick={() => setSidebarCollapsed(false)}
-                  className="p-1.5 hover:bg-white/[0.04] rounded-lg transition text-zinc-400 hover:text-zinc-200 mr-2"
-                  title="Expand sidebar"
-                >
-                  <ChevronRight size={15} className="rotate-180" />
-                </button>
-              )}
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="p-1.5 hover:bg-white/[0.04] rounded-lg transition text-zinc-400 hover:text-zinc-200 mr-1 flex items-center justify-center"
+                title={sidebarCollapsed ? "Show sources" : "Hide sources"}
+              >
+                <ChevronRight size={15} className={sidebarCollapsed ? "rotate-180" : ""} />
+              </button>
               <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Chat</span>
             </div>
             <div className="flex items-center gap-3">
               <button
-                onClick={() => setShowNotes(!showNotes)}
+                onClick={() => {
+                  setShowNotes(!showNotes);
+                  if (!showNotes) {
+                    setActiveCitation(null);
+                  }
+                }}
                 className={`p-1.5 rounded-lg transition ${showNotes ? 'bg-[#7c6af7]/20 text-[#7c6af7]' : 'text-zinc-400 hover:text-zinc-200 hover:bg-white/[0.04]'}`}
                 title="Notebook Notes"
               >
@@ -629,12 +677,10 @@ export default function NotebookPage() {
               )}
               <div ref={messagesEndRef} />
             </div>
-          </div>
-
-          {/* Message Input bar */}
-          <div className="px-6 pb-6 shrink-0 bg-gradient-to-t from-[#101216] via-[#101216] to-transparent">
+          </div>          {/* Message Input bar */}
+          <div className="px-4 sm:px-6 pb-4 sm:pb-6 shrink-0 bg-gradient-to-t from-[#101216] via-[#101216] to-transparent">
             <div className="max-w-2xl mx-auto">
-              <div className="flex items-end gap-3 px-4 py-3 rounded-2xl bg-[#181b21] border border-white/[0.05] shadow-lg relative">
+              <div className="flex items-end gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-2xl bg-[#181b21] border border-white/[0.05] shadow-lg relative">
                 <button onClick={() => fileInputRef.current?.click()} className="p-2 rounded-xl text-zinc-400 hover:text-white transition hover:bg-white/[0.02]">
                   <Paperclip size={16} />
                 </button>
@@ -655,8 +701,8 @@ export default function NotebookPage() {
                 />
 
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-[10px] font-bold tracking-wide px-2.5 py-1 bg-zinc-800 text-zinc-400 rounded-full">
-                    {selectedSources.size} {selectedSources.size === 1 ? 'source' : 'sources'}
+                  <span className="text-[10px] font-bold tracking-wide px-2 py-0.5 sm:px-2.5 sm:py-1 bg-zinc-800 text-zinc-400 rounded-full">
+                    {selectedSources.size} <span className="hidden xs:inline">{selectedSources.size === 1 ? 'source' : 'sources'}</span>
                   </span>
                   <button
                     onClick={send}
@@ -677,7 +723,7 @@ export default function NotebookPage() {
 
         {/* Right Sidebar - Citation / Document Viewer */}
         {activeCitation !== null && (
-          <aside className="w-80 shrink-0 flex flex-col overflow-hidden bg-[#101216] border border-white/[0.04] rounded-2xl">
+          <aside className="rc-responsive-right-sidebar w-80 shrink-0 flex flex-col overflow-hidden bg-[#101216] border border-white/[0.04] rounded-2xl animate-in slide-in-from-right duration-200">
             <div className="flex items-center justify-between px-4 py-4 border-b border-white/[0.04]">
               <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Citation source</span>
               <button onClick={() => setActiveCitation(null)} className="p-1 text-zinc-500 hover:text-zinc-300 transition">
@@ -789,7 +835,7 @@ export default function NotebookPage() {
         )}
         {/* Notes Sidebar */}
         {showNotes && (
-          <aside className="w-80 shrink-0 flex flex-col overflow-hidden bg-[#101216] border border-white/[0.04] rounded-2xl animate-in slide-in-from-right duration-200">
+          <aside className="rc-responsive-right-sidebar w-80 shrink-0 flex flex-col overflow-hidden bg-[#101216] border border-white/[0.04] rounded-2xl animate-in slide-in-from-right duration-200">
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-4 border-b border-white/[0.04]">
               <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Workspace Notes</span>

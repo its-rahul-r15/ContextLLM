@@ -63,59 +63,60 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-[#07080a] text-zinc-300 font-sans select-none antialiased flex flex-col">
       
       {/* Combined Single Header/Navbar matching mockup */}
-      <header className="sticky top-0 z-40 flex items-center justify-between px-8 h-16 bg-[#0c0e12]/80 backdrop-blur-md border-b border-white/[0.04]">
+      <header className="sticky top-0 z-40 flex items-center justify-between px-4 sm:px-8 h-16 bg-[#0c0e12]/80 backdrop-blur-md border-b border-white/[0.04]">
         {/* Left Brand */}
-        <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#7c6af7] to-[#5b4af2] shadow-lg shadow-[#7c6af7]/10">
-            <BookOpen size={16} className="text-white" />
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#7c6af7] to-[#5b4af2] shadow-lg shadow-[#7c6af7]/10">
+            <BookOpen size={14} className="text-white" />
           </div>
-          <span className="font-bold text-base text-white tracking-wide bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">ContextLLM</span>
+          <span className="font-bold text-sm sm:text-base text-white tracking-wide bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">ContextLLM</span>
         </div>
 
         {/* Right tools and actions */}
-        <div className="flex items-center gap-4 relative">
+        <div className="flex items-center gap-2 sm:gap-4 relative">
           {/* Quick Search */}
-          <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-zinc-900/50 border border-white/[0.04] focus-within:border-[#7c6af7]/50 focus-within:bg-zinc-900 transition-all duration-200">
-            <Search size={14} className="text-zinc-500 shrink-0" />
+          <div className="flex items-center gap-1.5 sm:gap-2.5 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-zinc-900/50 border border-white/[0.04] focus-within:border-[#7c6af7]/50 focus-within:bg-zinc-900 transition-all duration-200 w-28 xs:w-36 sm:w-44 md:w-56">
+            <Search size={12} className="text-zinc-500 shrink-0" />
             <input 
               type="text" 
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search notebooks..."
-              className="bg-transparent text-xs outline-none w-44 md:w-56 text-zinc-200 placeholder-zinc-500 border-none"
+              placeholder="Search..."
+              className="bg-transparent text-[10px] sm:text-xs outline-none w-full text-zinc-200 placeholder-zinc-500 border-none"
             />
           </div>
 
           {/* Create notebook button */}
           <button 
             onClick={() => setCreating(true)}
-            className="flex items-center gap-1.5 px-5 py-2 bg-gradient-to-r from-[#7c6af7] to-[#6b58f9] hover:from-[#8e7ef9] hover:to-[#7c6af7] text-white rounded-full text-xs font-bold shadow-md shadow-[#7c6af7]/10 hover:scale-[1.02] active:scale-95 transition-all duration-150 shrink-0"
+            className="flex items-center gap-1 px-3 sm:px-5 py-1.5 sm:py-2 bg-gradient-to-r from-[#7c6af7] to-[#6b58f9] hover:from-[#8e7ef9] hover:to-[#7c6af7] text-white rounded-full text-[10px] sm:text-xs font-bold shadow-md shadow-[#7c6af7]/10 hover:scale-[1.02] active:scale-95 transition-all duration-150 shrink-0"
           >
-            <Plus size={14} strokeWidth={2.5} />
-            <span>Create new</span>
+            <Plus size={12} strokeWidth={2.5} />
+            <span className="hidden xs:inline">Create new</span>
+            <span className="inline xs:hidden">New</span>
           </button>
 
-          <span className="h-4 w-px bg-white/[0.08]" />
+          <span className="h-4 w-px bg-white/[0.08] hidden xs:inline" />
 
           {/* User Profile Trigger */}
           <button 
             onClick={() => setShowProfile(!showProfile)} 
             className="flex items-center gap-2 p-0.5 rounded-full hover:bg-white/[0.03] border border-transparent hover:border-white/[0.06] transition-all shrink-0"
           >
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#7c6af7] to-[#9b8df9] flex items-center justify-center text-xs font-bold text-white border border-white/10 shadow-inner">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-[#7c6af7] to-[#9b8df9] flex items-center justify-center text-xs font-bold text-white border border-white/10 shadow-inner">
               {(user?.displayName || user?.email || 'U')[0].toUpperCase()}
             </div>
           </button>
 
           {showProfile && (
-            <div className="absolute right-0 top-12 rounded-2xl overflow-hidden z-50 w-56 shadow-2xl bg-[#12141a] border border-white/[0.06] animate-in fade-in slide-in-from-top-1 duration-150">
-              <div className="px-5 py-4 border-b border-white/[0.04] bg-[#0c0e12]">
+            <div className="absolute right-0 top-12 rounded-2xl overflow-hidden z-50 w-52 sm:w-56 shadow-2xl bg-[#12141a] border border-white/[0.06] animate-in fade-in slide-in-from-top-1 duration-150">
+              <div className="px-4 sm:px-5 py-3.5 sm:py-4 border-b border-white/[0.04] bg-[#0c0e12]">
                 <p className="text-xs font-bold text-white truncate">{user?.displayName || 'User profile'}</p>
                 <p className="text-[10px] text-zinc-500 truncate mt-0.5">{user?.email}</p>
               </div>
               <button 
                 onClick={() => { setShowProfile(false); logout().then(() => navigate('/login')); }} 
-                className="w-full text-left px-5 py-3.5 text-xs text-red-400 hover:bg-red-500/[0.04] hover:text-red-300 transition font-semibold"
+                className="w-full text-left px-4 sm:px-5 py-3 sm:py-3.5 text-xs text-red-400 hover:bg-red-500/[0.04] hover:text-red-300 transition font-semibold"
               >
                 Sign out
               </button>
@@ -125,35 +126,35 @@ export default function DashboardPage() {
       </header>
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl mx-auto w-full px-8 py-12 overflow-y-auto">
-        <h2 className="text-xl font-bold tracking-tight text-white mb-8 select-none">
+      <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-8 py-8 sm:py-12 overflow-y-auto">
+        <h2 className="text-lg sm:text-xl font-bold tracking-tight text-white mb-6 sm:mb-8 select-none">
           My notebooks
         </h2>
 
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {[1, 2, 3, 4].map(i => (
               <div key={i} className="h-52 rounded-3xl bg-[#101216] border border-white/[0.04] animate-pulse" />
             ))}
           </div>
         ) : filtered.length === 0 && search ? (
-          <div className="flex flex-col items-center justify-center py-28 text-center">
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4 bg-zinc-900 border border-white/[0.02]">
-              <Search size={22} className="text-zinc-600" />
+          <div className="flex flex-col items-center justify-center py-20 sm:py-28 text-center">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center mb-4 bg-zinc-900 border border-white/[0.02]">
+              <Search size={20} className="text-zinc-600" />
             </div>
             <p className="text-sm font-semibold text-white">No notebooks match your search</p>
             <p className="text-xs text-zinc-500 mt-1">Try searching for another notebook title.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {/* Create Notebook Card Trigger (Card 1, Large/Premium) */}
             {!search && (
               <div 
                 onClick={() => setCreating(true)}
-                className="group h-52 rounded-3xl border border-dashed border-white/[0.08] hover:border-[#7c6af7]/40 bg-[#0c0e12]/20 hover:bg-[#7c6af7]/[0.02] transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center gap-3.5 p-6"
+                className="group h-48 sm:h-52 rounded-3xl border border-dashed border-white/[0.08] hover:border-[#7c6af7]/40 bg-[#0c0e12]/20 hover:bg-[#7c6af7]/[0.02] transition-all duration-300 cursor-pointer flex flex-col items-center justify-center text-center gap-3 p-5 sm:p-6"
               >
-                <div className="w-12 h-12 rounded-2xl bg-zinc-900/60 border border-white/[0.04] flex items-center justify-center text-zinc-400 group-hover:text-[#7c6af7] group-hover:border-[#7c6af7]/30 group-hover:scale-105 transition duration-300 shadow-inner">
-                  <Plus size={20} strokeWidth={2} />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-zinc-900/60 border border-white/[0.04] flex items-center justify-center text-zinc-400 group-hover:text-[#7c6af7] group-hover:border-[#7c6af7]/30 group-hover:scale-105 transition duration-300 shadow-inner">
+                  <Plus size={18} strokeWidth={2} />
                 </div>
                 <span className="text-xs font-bold tracking-wide text-zinc-500 group-hover:text-zinc-300 transition duration-300">
                   Create new notebook
@@ -167,16 +168,16 @@ export default function DashboardPage() {
               return (
                 <div 
                   key={nb._id} 
-                  className="group relative h-52 rounded-3xl p-6 bg-[#0f1115] border border-white/[0.04] hover:border-white/[0.08] transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-lg shadow-black/10 hover:shadow-xl hover:shadow-black/35 hover:-translate-y-0.5"
+                  className="group relative h-48 sm:h-52 rounded-3xl p-5 sm:p-6 bg-[#0f1115] border border-white/[0.04] hover:border-white/[0.08] transition-all duration-300 cursor-pointer flex flex-col justify-between shadow-lg shadow-black/10 hover:shadow-xl hover:shadow-black/35 hover:-translate-y-0.5"
                   onClick={() => navigate(`/notebook/${nb._id}`)}
                 >
                   <div className="flex items-start justify-between">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border shadow-sm transition-all duration-300 group-hover:scale-105 ${ICON_BACKGROUNDS[iconIndex]}`}>
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center border shadow-sm transition-all duration-300 group-hover:scale-105 ${ICON_BACKGROUNDS[iconIndex]}`}>
                       {NOTEBOOK_ICONS[iconIndex]}
                     </div>
                     <button
                       onClick={(e) => { e.stopPropagation(); setActiveMenu(activeMenu === nb._id ? null : nb._id); }}
-                      className="opacity-0 group-hover:opacity-100 p-2 rounded-xl hover:bg-white/[0.04] transition-all text-zinc-500 hover:text-zinc-300"
+                      className="opacity-100 lg:opacity-0 lg:group-hover:opacity-100 p-2 rounded-xl hover:bg-white/[0.04] transition-all text-zinc-500 hover:text-zinc-300"
                     >
                       <MoreHorizontal size={15} />
                     </button>

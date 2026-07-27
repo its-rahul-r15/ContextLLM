@@ -174,8 +174,14 @@ export default function NotebookPage() {
         setActiveConvId(convs[0]._id);
         api.chat.getMessages(convs[0]._id).then(setMessages);
       }
+      // Auto-resume status polling on load for any in-progress sources
+      srcs.forEach(src => {
+        if (src.status !== 'ready' && src.status !== 'failed') {
+          startPolling(src._id);
+        }
+      });
     });
-  }, [notebookId]);
+  }, [notebookId, startPolling]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -230,14 +236,16 @@ export default function NotebookPage() {
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
   };
 
-  const handleFile = async (e) => {
-    const file = e.target.files?.[0]; if (!file) return;
+  const handleUploadFile = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
     setUploading(true);
     const fd = new FormData(); fd.append('file', file);
     try {
       const src = await api.sources.uploadFile(notebookId, fd);
       setSources(prev => [src, ...prev]);
       startPolling(src._id);
+      setShowAddSource(false); // Close the popup after successful upload
     } finally { setUploading(false); e.target.value = ''; }
   };
 
@@ -456,7 +464,6 @@ export default function NotebookPage() {
             )}
             {filteredSources.map(src => {
               const isSelected = selectedSources.has(src._id);
-              const isPolling = pollingIds.has(src._id);
               return (
                 <div
                   key={src._id}
@@ -470,13 +477,31 @@ export default function NotebookPage() {
                     <div className="min-w-0">
                       <p className="text-xs font-semibold text-zinc-200 truncate leading-tight group-hover:text-white transition">{src.title}</p>
                       <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-zinc-500 font-medium">
-                        {isPolling ? (
-                          <span className="flex items-center gap-1 text-amber-500">
-                            <Loader2 size={10} className="animate-spin" /> Processing
-                          </span>
-                        ) : (
+                        {src.status === 'ready' ? (
                           <span>
                             {src.type.toUpperCase()} {formatSize(src.meta) ? `• ${formatSize(src.meta)}` : ''}
+                          </span>
+                        ) : src.status === 'failed' ? (
+                          <span className="flex items-center gap-1 text-red-500 font-semibold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500 shrink-0" />
+                            Failed
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-1.5 text-[#7c6af7] font-semibold">
+                            <span className="relative flex h-1.5 w-1.5 shrink-0">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#7c6af7] opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#7c6af7]"></span>
+                            </span>
+                            <span className="capitalize">
+                              {src.status === 'pending' && 'Pending...'}
+                              {src.status === 'fetching' && 'Fetching...'}
+                              {src.status === 'rendering' && 'Rendering...'}
+                              {src.status === 'extracting' && 'Extracting...'}
+                              {src.status === 'chunking' && 'Splitting...'}
+                              {src.status === 'embedding' && 'Embedding...'}
+                              {src.status === 'processing' && 'Processing...'}
+                              {!['pending', 'fetching', 'rendering', 'extracting', 'chunking', 'embedding', 'processing'].includes(src.status) && 'Processing...'}
+                            </span>
                           </span>
                         )}
                       </div>
@@ -642,7 +667,7 @@ export default function NotebookPage() {
                   </button>
                 </div>
               </div>
-              <input ref={fileInputRef} type="file" accept=".pdf,.vtt,.txt" className="hidden" onChange={handleFile} />
+              <input ref={fileInputRef} type="file" accept=".pdf,.vtt,.txt" className="hidden" onChange={handleUploadFile} />
               <p className="text-[10px] text-zinc-600 text-center mt-3">
                 Gemini Notebook can be inaccurate; please double-check its responses.
               </p>

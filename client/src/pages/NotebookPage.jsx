@@ -6,7 +6,7 @@ import {
   Globe, AlignLeft, Star, Trash2, Archive, ThumbsUp, ThumbsDown, Copy, RefreshCw,
   ZoomIn, ZoomOut, Printer, Bookmark, ArrowLeft, MoreHorizontal, Upload,
   Sparkles, Sliders, AudioLines, HelpCircle, Network, StickyNote,
-  PenSquare, Grid, Eye
+  PenSquare, Grid, Eye, Sun, Moon
 } from 'lucide-react';
 import { api, streamChat } from '../lib/api';
 import { useAuth } from '../contexts/AuthContext';
@@ -72,6 +72,17 @@ export default function NotebookPage() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
   const [isResizing, setIsResizing] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+    if (theme === 'light') {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+  }, [theme]);
 
   // Notes state
   const [showNotes, setShowNotes] = useState(false);
@@ -356,7 +367,7 @@ export default function NotebookPage() {
   );
 
   return (
-    <div className={`h-screen w-screen flex flex-col overflow-hidden bg-[#07080a] text-zinc-300 antialiased font-sans ${isResizing ? 'cursor-col-resize select-none' : ''}`}>
+    <div id="notebook-root" className={`h-screen w-screen flex flex-col overflow-hidden bg-[#07080a] text-zinc-300 antialiased font-sans ${isResizing ? 'cursor-col-resize select-none' : ''}`}>
       <style>{`
         @media (max-width: 768px) {
           .rc-responsive-sidebar {
@@ -368,7 +379,7 @@ export default function NotebookPage() {
             z-index: 50 !important;
             width: calc(100vw - 16px) !important;
             max-width: 400px !important;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
+            box-shadow: 0 20px 40px rgba(37, 22, 78, 0.16) !important;
           }
           .rc-responsive-right-sidebar {
             position: absolute !important;
@@ -379,13 +390,194 @@ export default function NotebookPage() {
             z-index: 50 !important;
             width: calc(100vw - 16px) !important;
             max-width: 400px !important;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6) !important;
+            box-shadow: 0 20px 40px rgba(37, 22, 78, 0.16) !important;
           }
+        }
+
+        /* ============================================================
+           Light theme — warm off-white surface, single deepened violet
+           accent, soft layered shadows instead of flat borders.
+           Kept as one scoped block so dark mode (default) is untouched.
+        ============================================================ */
+        .light {
+          --lt-bg: #f7f6fb;
+          --lt-bg-soft: #f0eef8;
+          --lt-surface: #ffffff;
+          --lt-surface-sunken: #f4f3f9;
+          --lt-border: #e6e3f0;
+          --lt-border-strong: #d9d5ea;
+          --lt-text-strong: #17151f;
+          --lt-text: #3f3d4d;
+          --lt-text-soft: #78748c;
+          --lt-text-faint: #a6a2b8;
+          --lt-accent: #6a4fe0;
+          --lt-accent-strong: #5b3fd1;
+          --lt-accent-wash: #6a4fe012;
+          --lt-shadow-sm: 0 1px 2px rgba(30, 20, 60, 0.05);
+          --lt-shadow-md: 0 4px 14px rgba(37, 22, 78, 0.07), 0 1px 2px rgba(37, 22, 78, 0.04);
+          --lt-shadow-lg: 0 16px 36px -8px rgba(37, 22, 78, 0.16), 0 2px 8px rgba(37, 22, 78, 0.05);
+        }
+
+        .light #notebook-root {
+          background-color: var(--lt-bg) !important;
+          color: var(--lt-text) !important;
+          background-image: radial-gradient(circle at 12% 0%, #6a4fe00d 0%, transparent 45%);
+        }
+
+        .light #notebook-header {
+          background-color: rgba(255, 255, 255, 0.82) !important;
+          border-bottom: 1px solid var(--lt-border) !important;
+          box-shadow: var(--lt-shadow-sm) !important;
+        }
+
+        .light aside, .light main, .light .bg-\[\#101216\] {
+          background-color: var(--lt-surface) !important;
+          border-color: var(--lt-border) !important;
+          color: var(--lt-text) !important;
+          box-shadow: var(--lt-shadow-md) !important;
+        }
+
+        .light .bg-\[\#0c0e12\] {
+          background-color: var(--lt-surface-sunken) !important;
+        }
+
+        .light .bg-\[\#181b21\], .light .bg-zinc-900\/50, .light .bg-zinc-900, .light .bg-\[\#101216\] {
+          background-color: var(--lt-surface-sunken) !important;
+          border-color: var(--lt-border) !important;
+        }
+
+        .light .bg-zinc-900\/60, .light .bg-\[\#0d0f13\]\/60 {
+          background-color: var(--lt-surface) !important;
+        }
+
+        .light h1, .light h2, .light h3, .light h4, .light p, 
+        .light span, .light div, .light li, .light a,
+        .light textarea, .light input {
+          color: var(--lt-text) !important;
+        }
+
+        .light h1, .light h2, .light h3, .light h4, .light .text-white, .light .text-zinc-100 {
+          color: var(--lt-text-strong) !important;
+        }
+
+        .light .text-zinc-200, .light .text-zinc-300 {
+          color: var(--lt-text) !important;
+        }
+
+        .light .text-zinc-400 {
+          color: var(--lt-text-soft) !important;
+        }
+
+        .light .text-zinc-500, .light .text-zinc-600 {
+          color: var(--lt-text-faint) !important;
+        }
+
+        .light .border-white\/\[0\.04\], .light .border-white\/\[0\.05\], .light .border-white\/\[0\.06\], .light .border-white\/\[0\.08\], .light .border-white\/\[0\.02\] {
+          border-color: var(--lt-border) !important;
+        }
+
+        .light .border-b, .light .border-t, .light .border-r, .light .border-l {
+          border-color: var(--lt-border) !important;
+        }
+
+        .light .bg-gradient-to-t {
+          --tw-gradient-from: var(--lt-bg) !important;
+          --tw-gradient-to: rgba(247, 246, 251, 0) !important;
+        }
+
+        .light textarea, .light input {
+          color: var(--lt-text-strong) !important;
+          background-color: transparent !important;
+        }
+
+        .light textarea::placeholder, .light input::placeholder {
+          color: var(--lt-text-faint) !important;
+        }
+
+        .light .bg-zinc-800\/40 {
+          background-color: var(--lt-bg-soft) !important;
+          border-color: var(--lt-border) !important;
+          color: var(--lt-text-strong) !important;
+        }
+
+        .light .hover\:bg-zinc-900\/60:hover {
+          background-color: var(--lt-surface-sunken) !important;
+        }
+
+        .light .group:hover .group-hover\:text-white {
+          color: var(--lt-text-strong) !important;
+        }
+
+        .light .text-\[\#60a5fa\] {
+          color: var(--lt-accent-strong) !important;
+        }
+
+        .light .bg-\[\#3b82f6\]\/20 {
+          background-color: var(--lt-accent-wash) !important;
+          border-color: var(--lt-border-strong) !important;
+        }
+
+        .light .bg-zinc-600 {
+          background-color: var(--lt-accent) !important;
+        }
+
+        .light .bg-zinc-800 {
+          background-color: var(--lt-bg-soft) !important;
+          color: var(--lt-text-soft) !important;
+        }
+
+        .light .hover\:bg-white\/\[0\.04\]:hover, .light .hover\:bg-white\/\[0\.02\]:hover {
+          background-color: var(--lt-bg-soft) !important;
+        }
+
+        .light .text-\[\#8e7ef9\] {
+          color: var(--lt-accent) !important;
+        }
+
+        .light .bg-\[\#7c6af7\]\/10 {
+          background-color: var(--lt-accent-wash) !important;
+          border-color: transparent !important;
+        }
+
+        .light .bg-zinc-850, .light .bg-zinc-800\/80 {
+          background-color: var(--lt-surface-sunken) !important;
+          border-color: var(--lt-border) !important;
+          color: var(--lt-text) !important;
+        }
+
+        .light .bg-\[\#7c6af7\] {
+          background-color: var(--lt-accent) !important;
+        }
+
+        .light .text-\[\#7c6af7\] {
+          color: var(--lt-accent) !important;
+        }
+
+        .light .bg-black\/60 {
+          background-color: rgba(23, 21, 31, 0.45) !important;
+        }
+
+        .light .border-dashed {
+          border-color: var(--lt-border-strong) !important;
+        }
+
+        .light .border-dashed:hover {
+          border-color: var(--lt-accent) !important;
+          background-color: var(--lt-accent-wash) !important;
+        }
+
+        .light .scrollbar-none button {
+          border-color: var(--lt-border) !important;
+        }
+
+        .light .scrollbar-none button.bg-zinc-800 {
+          background-color: var(--lt-accent-wash) !important;
+          color: var(--lt-accent-strong) !important;
         }
       `}</style>
 
       {/* Top Header */}
-      <nav className="flex items-center justify-between px-4 sm:px-6 h-14 shrink-0 z-50 bg-[#0c0e12] border-b border-white/[0.04]">
+      <nav id="notebook-header" className="hidden md:flex items-center justify-between px-4 sm:px-6 h-14 shrink-0 z-50 bg-[#0c0e12] border-b border-white/[0.04]">
         <div className="flex items-center gap-2 sm:gap-4 min-w-0">
           <Link to="/dashboard" className="flex items-center gap-2.5 shrink-0">
             <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-[#7c6af7]">
@@ -406,6 +598,16 @@ export default function NotebookPage() {
             <span className="hidden xs:inline">Back to Notebooks</span>
             <span className="inline xs:hidden">Back</span>
           </Link>
+
+          {/* Theme Toggle */}
+          <button 
+            onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+            className="p-1.5 rounded-lg border border-white/[0.08] hover:bg-white/[0.04] text-zinc-400 hover:text-white transition shrink-0"
+            title="Toggle theme"
+          >
+            {theme === 'light' ? <Moon size={13} /> : <Sun size={13} />}
+          </button>
+
           <button 
             onClick={() => setShowProfile(!showProfile)} 
             className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#7c6af7] to-[#9b8df9] flex items-center justify-center text-xs font-bold text-white border border-white/10 hover:opacity-90 transition shrink-0"
@@ -584,18 +786,35 @@ export default function NotebookPage() {
         <main className="flex-1 flex flex-col overflow-hidden bg-[#101216] border border-white/[0.04] rounded-2xl relative">
 
           {/* Chat Panel Header */}
-          <div className="px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between border-b border-white/[0.04]">
-            <div className="flex items-center gap-2">
+          <div className="px-3 sm:px-6 py-2.5 sm:py-4 flex items-center justify-between border-b border-white/[0.04]">
+            <div className="flex items-center gap-1 sm:gap-2 min-w-0">
+              <Link to="/dashboard" className="md:hidden p-1 text-zinc-400 hover:text-white transition shrink-0 mr-1">
+                <ArrowLeft size={16} />
+              </Link>
               <button
                 onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-                className="p-1.5 hover:bg-white/[0.04] rounded-lg transition text-zinc-400 hover:text-zinc-200 mr-1 flex items-center justify-center"
+                className="p-1.5 hover:bg-white/[0.04] rounded-lg transition text-zinc-400 hover:text-zinc-200 mr-1 flex items-center justify-center shrink-0"
                 title={sidebarCollapsed ? "Show sources" : "Hide sources"}
               >
                 <ChevronRight size={15} className={sidebarCollapsed ? "rotate-180" : ""} />
               </button>
-              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Chat</span>
+              <span className="md:hidden text-xs font-bold text-white truncate max-w-[90px] xs:max-w-[140px] shrink-0">
+                {notebook?.title}
+              </span>
+              <span className="hidden md:inline text-xs font-bold uppercase tracking-wider text-zinc-400">
+                Chat
+              </span>
             </div>
             <div className="flex items-center gap-2 sm:gap-3">
+              {/* Theme Toggle on Mobile */}
+              <button 
+                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+                className="md:hidden p-1.5 rounded-lg border border-white/[0.08] hover:bg-white/[0.04] text-zinc-400 hover:text-white transition shrink-0"
+                title="Toggle theme"
+              >
+                {theme === 'light' ? <Moon size={14} /> : <Sun size={14} />}
+              </button>
+
               <button
                 onClick={() => { setShowAddSource(true); setAddMode(''); }}
                 className="flex items-center gap-1.5 px-3 py-1.5 bg-[#7c6af7]/10 hover:bg-[#7c6af7]/20 border border-[#7c6af7]/20 text-[#8e7ef9] rounded-full text-[10px] sm:text-xs font-bold transition shadow-sm shrink-0"
@@ -699,8 +918,12 @@ export default function NotebookPage() {
                   value={input}
                   onChange={(e) => {
                     setInput(e.target.value);
-                    e.target.style.height = 'auto';
-                    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+                    const scrollHeight = e.target.scrollHeight;
+                    if (e.target.value === '') {
+                      e.target.style.height = '24px';
+                    } else {
+                      e.target.style.height = Math.min(scrollHeight, 120) + 'px';
+                    }
                   }}
                   onKeyDown={handleKey}
                   placeholder="Start typing..."

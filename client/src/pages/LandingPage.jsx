@@ -54,12 +54,12 @@ const STEPS = [
 ];
 
 const FEATURES = [
-  { code: "F—01", Icon: ShieldCheck, title: "Answers you can check", desc: "Every line ContextLLM writes traces back to a source you actually saved — click it, and you land on the exact minute or paragraph.", color: C.indigo },
-  { code: "F—02", Icon: Youtube, title: "Reads everything", desc: "YouTube, podcasts, PDFs, newsletters, plain links — transcribed, parsed and indexed within seconds of adding.", color: C.coral },
-  { code: "F—03", Icon: MessageSquare, title: "Talks like a person", desc: "Ask follow-up questions the way you would in conversation. No boolean search, no keyword guessing.", color: C.teal },
-  { code: "F—04", Icon: Sparkles, title: "Finds it fast", desc: "Semantic ContextLLM across hundreds of saved sources, back in the time it takes to finish typing.", color: C.amber },
-  { code: "F—05", Icon: Network, title: "Connects the dots", desc: "Ideas across unrelated sources get linked automatically, surfacing patterns you'd never cross-reference by hand.", color: C.violet },
-  { code: "F—06", Icon: ShieldCheck, title: "Stays yours", desc: "Nothing you save trains a model that isn't yours. Private by default, exportable any time.", color: C.sage },
+  { code: "F—01", Icon: Network, title: "Semantic Knowledge Graph", desc: "Visualize the connections. Ideas across unrelated sources get mapped automatically, surfacing hidden semantic links and structural patterns.", color: C.violet },
+  { code: "F—02", Icon: FileText, title: "Interactive Notes Workspace", desc: "Synthesize and draft. Write custom notes, copy citations, and organize insights side-by-side in a split pane that autosaves instantly.", color: C.indigo },
+  { code: "F—03", Icon: ShieldCheck, title: "Selective Context Grounding", desc: "Control the context. Toggle checkboxes to selectively focus the AI's reasoning on specific files, folders, or your entire library.", color: C.teal },
+  { code: "F—04", Icon: Sparkles, title: "Live Ingestion Pipeline", desc: "See the ingestion work. Watch live status indicators track transcribing, parsing, sentence splitting, and vector embedding in real-time.", color: C.amber },
+  { code: "F—05", Icon: Youtube, title: "Reads Video Transcripts (VTT)", desc: "Video and audio script parsing. Upload VTT subtitle tracks alongside PDFs, YouTube video URLs, and text docs to query dialogue timelines.", color: C.coral },
+  { code: "F—06", Icon: ShieldCheck, title: "Privacy-First Storage", desc: "Safe and exportable. Nothing you save trains public models. Your research data stays private, secure, and fully under your control.", color: C.sage },
 ];
 
 const SOURCES = [
@@ -70,10 +70,15 @@ const SOURCES = [
 ];
 
 const TESTIMONIALS = [
-  { name: "Priya Sharma", role: "Product manager, reads 40+ articles a week", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80", text: "I stopped screenshotting things I'd never find again. Now I just ask." },
-  { name: "James Okoro", role: "PhD researcher, 200+ papers in one library", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80", text: "It cross-references papers I'd forgotten I'd even read." },
-  { name: "Sofia Marchetti", role: "Video essayist, researches every episode", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=160&q=80", text: "Six hours of research turned into forty-five minutes." },
-  { name: "Daniel Yuen", role: "CTO, replaced four separate tools", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=160&q=80", text: "Every citation checks out. That's the whole pitch, honestly." },
+  { name: "Hitesh Chaudhary", role: "Founder & Tech Educator", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=160&q=80", text: "Replaced four different text organizers for course scripting. ContextLLM is insanely fast." },
+  { name: "Piyush Garg", role: "Software Engineer & Creator", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=160&q=80", text: "Six hours of research turned into forty-five minutes. Grounding AI in actual code repos works." },
+  { name: "Peeyush", role: "SaaS Product Builder", avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=160&q=80", text: "The citations check out every single time. That is the winning pitch for any research tool." },
+  { name: "Ayush", role: "Backend Developer", avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=160&q=80", text: "Natively parsing VTT transcript files saved me hours of audio transcribing for podcast summaries." },
+  { name: "Aman Singh", role: "Full Stack Developer", avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=160&q=80", text: "Finally, an LLM notebook space that doesn't make guesses or hallucinate context." },
+  { name: "Sujal", role: "UI/UX Product Designer", avatar: "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&w=160&q=80", text: "The side-by-side notes split pane and auto-saves make synthesizing summaries a absolute breeze." },
+  { name: "Anushka", role: "AI Research Scholar", avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=160&q=80", text: "The Knowledge Graph visualization helps me find semantic links across 50+ papers instantly." },
+  { name: "Vaishnavi", role: "Content Strategy Lead", avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=160&q=80", text: "I stopped hoarding bookmark folders. Now I just drop URLs, drag PDFs, and ask questions." },
+  { name: "Dipak Kumar", role: "Analytics Lead", avatar: "https://images.unsplash.com/photo-1500048993953-d23a436266cf?auto=format&fit=crop&w=160&q=80", text: "Checking claims directly back to the matching paragraph makes verification 10x faster." }
 ];
 
 /* ─ Hooks ────────────────────────────────────────────────────────────────── */
@@ -185,6 +190,47 @@ export default function LandingPage() {
           * { transition-duration: 0.01ms !important; }
         }
         a:focus-visible, button:focus-visible { outline: 2px solid ${C.indigo}; outline-offset: 2px; border-radius: 4px; }
+
+        /* Marquee Autoplay Testimonials Scroll */
+        @keyframes rc-marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .rc-marquee-wrapper {
+          overflow: hidden;
+          width: 100vw;
+          position: relative;
+          left: 50%;
+          right: 50%;
+          margin-left: -50vw;
+          margin-right: -50vw;
+          padding: 20px 0;
+        }
+        .rc-marquee-track {
+          display: flex;
+          gap: 24px;
+          width: max-content;
+          animation: rc-marquee 45s linear infinite;
+        }
+        .rc-marquee-track:hover {
+          animation-play-state: paused;
+        }
+        .rc-marquee-fade-left, .rc-marquee-fade-right {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: 120px;
+          z-index: 2;
+          pointer-events: none;
+        }
+        .rc-marquee-fade-left {
+          left: 0;
+          background: linear-gradient(90deg, #12141c 0%, transparent 100%);
+        }
+        .rc-marquee-fade-right {
+          right: 0;
+          background: linear-gradient(-90deg, #12141c 0%, transparent 100%);
+        }
 
         /* Responsive styling */
         .rc-hero-grid {
@@ -496,11 +542,24 @@ export default function LandingPage() {
               Notes from people who read for a living.
             </h2>
           </Reveal>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))", gap: "16px" }}>
-            {TESTIMONIALS.map((t, i) => (
-              <Reveal key={t.name} delay={i * 80}>
-                <div className="rc-card" style={{ background: C.ink2, border: `1px solid ${C.lineD}`, borderRadius: "14px", padding: "24px" }}>
-                  <p className="rc-serif" style={{ fontStyle: "italic", fontSize: "16px", lineHeight: 1.55, marginBottom: "22px", color: "rgba(242,239,231,0.88)" }}>
+          <div className="rc-marquee-wrapper">
+            <div className="rc-marquee-fade-left" />
+            <div className="rc-marquee-fade-right" />
+            <div className="rc-marquee-track">
+              {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
+                <div
+                  key={`${t.name}-${i}`}
+                  className="rc-card"
+                  style={{
+                    background: C.ink2,
+                    border: `1px solid ${C.lineD}`,
+                    borderRadius: "14px",
+                    padding: "24px",
+                    width: "320px",
+                    flexShrink: 0
+                  }}
+                >
+                  <p className="rc-serif" style={{ fontStyle: "italic", fontSize: "13px", lineHeight: 1.55, marginBottom: "22px", color: "rgba(242,239,231,0.88)" }}>
                     "{t.text}"
                   </p>
                   <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
@@ -511,8 +570,8 @@ export default function LandingPage() {
                     </div>
                   </div>
                 </div>
-              </Reveal>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>

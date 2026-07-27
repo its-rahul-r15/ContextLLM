@@ -185,13 +185,97 @@ export default function LandingPage() {
           * { transition-duration: 0.01ms !important; }
         }
         a:focus-visible, button:focus-visible { outline: 2px solid ${C.indigo}; outline-offset: 2px; border-radius: 4px; }
+
+        /* Responsive styling */
+        .rc-hero-grid {
+          display: grid;
+          grid-template-columns: 1.1fr 0.9fr;
+          gap: 56px;
+          align-items: center;
+        }
+        .rc-demo-grid {
+          display: grid;
+          grid-template-columns: 260px 1fr;
+          gap: 24px;
+        }
+        .rc-source-catalog-container {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        @media (max-width: 900px) {
+          .rc-hero-grid {
+            grid-template-columns: 1fr;
+            gap: 40px;
+            text-align: center;
+          }
+          .rc-hero-img-container {
+            max-width: 320px !important;
+            margin: 40px auto 0 !important;
+          }
+          .rc-hero-text-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+          }
+          .rc-hero-text-container p {
+            max-width: 100% !important;
+            margin-left: auto;
+            margin-right: auto;
+          }
+          .rc-hero-buttons {
+            justify-content: center !important;
+          }
+          .rc-demo-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+          }
+          .rc-source-catalog-container {
+            flex-direction: row;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            gap: 12px;
+            -webkit-overflow-scrolling: touch;
+            border-bottom: 1px solid ${C.line};
+          }
+          .rc-source-catalog-container button {
+            flex-shrink: 0;
+            width: 240px;
+          }
+        }
+        @media (max-width: 768px) {
+          .rc-nav-links {
+            display: none !important;
+          }
+          .rc-footer-mono {
+            flex-direction: column !important;
+            text-align: center !important;
+            gap: 16px !important;
+          }
+          .rc-footer-links {
+            justify-content: center !important;
+          }
+        }
+        @media (max-width: 600px) {
+          header nav {
+            padding: 16px 20px !important;
+          }
+          section, footer, .rc-hero-grid, .rc-demo-grid {
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+          }
+          .rc-hero-grid {
+            padding-top: 48px !important;
+            padding-bottom: 48px !important;
+          }
+        }
       `}</style>
 
       {/* ═══ NAV ═══ */}
       <header style={{ position: "sticky", top: 0, zIndex: 50, background: "rgba(242,239,231,0.88)", backdropFilter: "blur(14px)", borderBottom: `1px solid ${C.line}` }}>
         <nav style={{ maxWidth: "1160px", margin: "0 auto", padding: "16px 32px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <a href="#top" className="rc-serif" style={{ fontSize: "20px", fontWeight: 600, color: C.ink, textDecoration: "none", letterSpacing: "-0.01em" }}>ContextLLM</a>
-          <div className="rc-mono" style={{ display: "flex", alignItems: "center", gap: "28px", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase" }}>
+          <div className="rc-mono rc-nav-links" style={{ display: "flex", alignItems: "center", gap: "28px", fontSize: "11px", letterSpacing: "0.08em", textTransform: "uppercase" }}>
             <a href="#features" className="rc-nav-link" style={{ color: "rgba(18,20,28,0.65)" }}>Features</a>
             <a href="#how" className="rc-nav-link" style={{ color: "rgba(18,20,28,0.65)", display: "none" }}>How it works</a>
             <a href="#demo" className="rc-nav-link" style={{ color: "rgba(18,20,28,0.65)" }}>Demo</a>
@@ -206,8 +290,8 @@ export default function LandingPage() {
 
       {/* ═══ S1 · HERO (ink) ═══ */}
       <section id="top" style={{ background: C.ink, color: C.paper, position: "relative", overflow: "hidden" }}>
-        <div style={{ maxWidth: "1160px", margin: "0 auto", padding: "88px 32px 96px", display: "grid", gridTemplateColumns: "1.1fr 0.9fr", gap: "56px", alignItems: "center" }}>
-          <div>
+        <div className="rc-hero-grid" style={{ maxWidth: "1160px", margin: "0 auto", padding: "88px 32px 96px" }}>
+          <div className="rc-hero-text-container">
             <Reveal>
               <Eyebrow color="rgba(232,164,41,0.85)">Grounded knowledge, not guesses</Eyebrow>
             </Reveal>
@@ -225,7 +309,7 @@ export default function LandingPage() {
               </p>
             </Reveal>
             <Reveal delay={240}>
-              <div style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
+              <div className="rc-hero-buttons" style={{ display: "flex", alignItems: "center", gap: "20px", flexWrap: "wrap" }}>
                 <a href={ctaHref} className="rc-btn" style={{
                   display: "inline-flex", alignItems: "center", gap: "8px", padding: "13px 26px",
                   borderRadius: "999px", background: C.amber, color: C.ink, fontSize: "13px",
@@ -240,7 +324,7 @@ export default function LandingPage() {
 
           {/* Right: real photo + floating citation chips */}
           <Reveal delay={200} y={16}>
-            <div style={{ position: "relative", maxWidth: "420px", margin: "0 auto" }}>
+            <div className="rc-hero-img-container" style={{ position: "relative", maxWidth: "420px", margin: "0 auto" }}>
               <div style={{ borderRadius: "18px", overflow: "hidden", border: `1px solid rgba(242,239,231,0.14)`, boxShadow: "0 40px 90px rgba(0,0,0,0.45)" }}>
                 <img
                   src="https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=800&q=80"
@@ -334,12 +418,12 @@ export default function LandingPage() {
             </h2>
           </Reveal>
 
-          <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: "24px" }}>
+          <div className="rc-demo-grid">
             {/* Source catalog list */}
             <Reveal delay={100}>
               <div>
                 <p className="rc-mono" style={{ fontSize: "10px", letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(18,20,28,0.4)", marginBottom: "10px" }}>Your sources</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div className="rc-source-catalog-container">
                   {SOURCES.map((s, i) => {
                     const active = i === selIdx;
                     return (
@@ -371,7 +455,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: "12px", flex: 1 }}>
-                  <div style={{ width: "26px", height: "26px", borderRadius: "50%", background: SOURCES[selIdx].color + "22", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: "2px" }}>
+                  <div style={{ width: "26px", height: "26px", borderRadius: "50%", background: SOURCES[selIdx].color + "22", display: "flex", alignItems: "center", justifycontent: "center", flexShrink: 0, marginTop: "2px" }}>
                     <Sparkles size={13} color={SOURCES[selIdx].color} />
                   </div>
                   <div style={{ flex: 1 }}>
@@ -461,14 +545,14 @@ export default function LandingPage() {
         </div>
 
         <div style={{ borderTop: `1px solid ${C.line}` }}>
-          <div className="rc-mono" style={{
+          <div className="rc-mono rc-footer-mono" style={{
             maxWidth: "1160px", margin: "0 auto", padding: "26px 32px", display: "flex",
             flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "14px",
             fontSize: "11px", color: "rgba(18,20,28,0.42)", letterSpacing: "0.02em",
           }}>
             <span>ContextLLM — a second brain, footnoted</span>
             <span>© 2026, all sources cited</span>
-            <div style={{ display: "flex", gap: "18px" }}>
+            <div className="rc-footer-links" style={{ display: "flex", gap: "18px" }}>
               <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Privacy</a>
               <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Terms</a>
               <a href="#" style={{ color: "inherit", textDecoration: "none" }}>Contact</a>
